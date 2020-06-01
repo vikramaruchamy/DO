@@ -35,7 +35,7 @@
 <p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed.</p>
 <p>Now the PostgreSQL service is stopped in all three droplets.</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
-<h2 id="step-2-—-installing-patroni">Step 2 — Installing Patroni</h2>
+<h2 id="step-2---installing-patroni">Step 2 - Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Introduction to the step. What are we going to do and why are we doing it?</p>
 <p>First…</p>
@@ -43,27 +43,27 @@
 <p>Finally…</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
 <p>Now transition to the next step by telling the reader what’s next.</p>
-<h2 id="step-3-—-installing-etcd">Step 3 — Installing ETCD</h2>
+<h2 id="step-3---installing-etcd">Step 3 - Installing ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-4-—-installing-haproxy">Step 4 — Installing HAProxy</h2>
+<h2 id="step-4---installing-haproxy">Step 4 - Installing HAProxy</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-5-—-configuring-etcd">Step 5 — Configuring ETCD</h2>
+<h2 id="step-5---configuring-etcd">Step 5 - Configuring ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-6-—-configuring-patroni">Step 6 — Configuring Patroni</h2>
+<h2 id="step-6---configuring-patroni">Step 6 - Configuring Patroni</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-7-—-configuring-haproxy">Step 7 — Configuring HAProxy</h2>
+<h2 id="step-7---configuring-haproxy">Step 7 - Configuring HAProxy</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-8—-testing-the-setup">Step 8— Testing the Setup</h2>
+<h2 id="step-8---testing-the-setup">Step 8 - Testing the Setup</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
