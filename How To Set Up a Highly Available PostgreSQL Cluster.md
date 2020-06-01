@@ -51,6 +51,22 @@
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
+<h2 id="step-5-—-configuring-etcd">Step 5 — Configuring ETCD</h2>
+<p>Another introduction</p>
+<p>Your content</p>
+<p>Transition to the next step.</p>
+<h2 id="step-6-—-configuring-patroni">Step 6 — Configuring Patroni</h2>
+<p>Another introduction</p>
+<p>Your content</p>
+<p>Transition to the next step.</p>
+<h2 id="step-7-—-configuring-haproxy">Step 7 — Configuring HAProxy</h2>
+<p>Another introduction</p>
+<p>Your content</p>
+<p>Transition to the next step.</p>
+<h2 id="step-8—-testing-the-setup">Step 8— Testing the Setup</h2>
+<p>Another introduction</p>
+<p>Your content</p>
+<p>Transition to the next step.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this article, you have set up a robust and highly available PostgreSQL cluster.</p>
 <p>Now you can improve it further by</p>
