@@ -33,7 +33,7 @@
 </code></pre>
 <p>You should execute this command in all three droplets where PostgreSQL is installed.</p>
 <p>Now the PostgreSQL service is stopped in all three droplets.</p>
-<p>You can install Patroni and so that it takes charge of running PostgreSQL Service as required.</p>
+<p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
 <h2 id="step-2-—-installing-patroni">Step 2 — Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Introduction to the step. What are we going to do and why are we doing it?</p>
