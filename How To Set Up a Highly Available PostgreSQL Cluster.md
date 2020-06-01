@@ -26,7 +26,7 @@
 <p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
 <p>-Reserve two droplets for installing Partroni and HAProxy.</p>
 <!-- Example:&#10;&#10;* One Ubuntu 18.04 server with at least 1GB of RAM set up by following [the Ubuntu 18.04 initial server setup guide](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04), including a sudo non-root user and a firewall.&#10;&#10;* Nginx installed on your server, as shown in [How To Install Nginx on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04).&#10;&#10;* A domain name configured to point to your server. You can learn how to point domains to DigitalOcean Droplets by following the [How To Set Up a Host Name with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-host-name-with-digitalocean) tutorial.&#10;&#10;-->
-<h2 id="step-1-—-stopping-postgres-service">Step 1 — Stopping Postgres Service</h2>
+<h2 id="step-1---stopping-postgres-service">Step 1 - Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the systemd services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
 <p>Execute the following command to stop the PostgreSQL service.</p>
