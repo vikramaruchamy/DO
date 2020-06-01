@@ -52,7 +52,7 @@
 <p>Your content</p>
 <p>Transition to the next step.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>In this article, you have set up robust and highly available PostgreSQL cluster.</p>
+<p>In this article, you have set up a robust and highly available PostgreSQL cluster.</p>
 <p>Now you can improve it further by</p>
 <ul>
 <li>adding larger etcd cluster to improve availability</li>
