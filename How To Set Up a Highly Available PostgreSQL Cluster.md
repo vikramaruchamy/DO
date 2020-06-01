@@ -16,7 +16,7 @@
 <!-- Learn about formatting headers at https://do.co/style#headers -->
 <h3 id="introduction">Introduction</h3>
 <!-- Our articles have a specific structure. Learn more at https://do.co/style/structure -->
-<p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and verstaile, but doesn’t have features for the high availability.</p>
+<p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the high availability.</p>
 <p>In this tutorial, you’ll set up the PostgreSQL with high availability using Patroni and HAProxy.</p>
 <p>When you’re finished, you will have a robust and highly available PostgreSQL cluster ready for production use.</p>
 <h2 id="prerequisites">Prerequisites</h2>
