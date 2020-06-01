@@ -32,7 +32,7 @@
 <p>Execute the following command to stop the PostgreSQL service.</p>
 <pre class=" language-command"><code class="prism  language-command">$ sudo systemctl stop postgresql
 </code></pre>
-<p>You should execute this command in all three droplets where PostgreSQL is installed.</p>
+<p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed.</p>
 <p>Now the PostgreSQL service is stopped in all three droplets.</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
 <h2 id="step-2-—-installing-patroni">Step 2 — Installing Patroni</h2>
