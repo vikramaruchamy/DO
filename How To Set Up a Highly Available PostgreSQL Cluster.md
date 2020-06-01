@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How To Set Up a Highly Available PostgreSQL Cluster</title>
+  <title>DO_Sample_Article</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
 </head>
 
