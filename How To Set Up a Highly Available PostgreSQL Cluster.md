@@ -26,7 +26,7 @@
 <p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
 <p>-Reserve two droplets for installing Partroni and HAProxy.</p>
 <!-- Example:&#10;&#10;* One Ubuntu 18.04 server with at least 1GB of RAM set up by following [the Ubuntu 18.04 initial server setup guide](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04), including a sudo non-root user and a firewall.&#10;&#10;* Nginx installed on your server, as shown in [How To Install Nginx on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04).&#10;&#10;* A domain name configured to point to your server. You can learn how to point domains to DigitalOcean Droplets by following the [How To Set Up a Host Name with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-host-name-with-digitalocean) tutorial.&#10;&#10;-->
-<h2 id="step-1---stopping-postgres-service">Step 1 - Stopping Postgres Service</h2>
+<h2 id="step-1-—-stopping-postgres-service">Step 1 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the systemd services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
 <p>Execute the following command to stop the PostgreSQL service.</p>
@@ -35,7 +35,7 @@
 <p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed.</p>
 <p>Now the PostgreSQL service is stopped in all three droplets.</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
-<h2 id="step-2---installing-patroni">Step 2 - Installing Patroni</h2>
+<h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Introduction to the step. What are we going to do and why are we doing it?</p>
 <p>First…</p>
@@ -43,27 +43,27 @@
 <p>Finally…</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
 <p>Now transition to the next step by telling the reader what’s next.</p>
-<h2 id="step-3---installing-etcd">Step 3 - Installing ETCD</h2>
+<h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-4---installing-haproxy">Step 4 - Installing HAProxy</h2>
+<h2 id="step-4-—-installing-haproxy">Step 4 <strong>—</strong> Installing HAProxy</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-5---configuring-etcd">Step 5 - Configuring ETCD</h2>
+<h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-6---configuring-patroni">Step 6 - Configuring Patroni</h2>
+<h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-7---configuring-haproxy">Step 7 - Configuring HAProxy</h2>
+<h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-8---testing-the-setup">Step 8 - Testing the Setup</h2>
+<h2 id="step-8-—-testing-the-setup">Step 8 <strong>—</strong> Testing the Setup</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
