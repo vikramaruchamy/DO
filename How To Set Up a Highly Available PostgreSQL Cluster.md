@@ -21,10 +21,10 @@
 <p>When you’re finished, you would have set up the PostgreSQL with high availability using Patroni and HAProxy.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <!-- Prerequisites let you leverage existing tutorials so you don't have to repeat installation or setup steps in your tutorial. Learn more at https://do.co/style#prerequisites -->
-<p>Before you begin this guide you’ll need the following:</p>
+<p>Before you begin this guide, you’ll need the following:</p>
 <p>-Five Ubuntu 20.04 server droplets set up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall.</p>
 <p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
-<p>-Remaining two server droplets are reserved for installing Partroni and HAProxy.</p>
+<p>-Reserve two droplets for installing Partroni and HAProxy.</p>
 <!-- Example:&#10;&#10;* One Ubuntu 18.04 server with at least 1GB of RAM set up by following [the Ubuntu 18.04 initial server setup guide](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04), including a sudo non-root user and a firewall.&#10;&#10;* Nginx installed on your server, as shown in [How To Install Nginx on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04).&#10;&#10;* A domain name configured to point to your server. You can learn how to point domains to DigitalOcean Droplets by following the [How To Set Up a Host Name with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-host-name-with-digitalocean) tutorial.&#10;&#10;-->
 <h2 id="step-1-—-stopping-postgres-service">Step 1 — Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
