@@ -38,7 +38,7 @@
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
-<p>Introduction to the step. What are we going to do and why are we doing it?</p>
+<p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
 <p>First…</p>
 <p>Next…</p>
 <p>Finally…</p>
