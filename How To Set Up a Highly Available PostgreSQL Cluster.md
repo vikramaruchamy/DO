@@ -46,7 +46,7 @@
 <p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Finally, you can configure the Patorni to handle PostgrSQL service.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
-<p>Now transition to the next step by telling the reader what’s next.</p>
+<!--Now transition to the next step by telling the reader what's next.-->
 <h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
