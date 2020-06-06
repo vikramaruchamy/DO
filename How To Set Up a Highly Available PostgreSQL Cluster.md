@@ -56,7 +56,9 @@
 <p>Your content</p>
 <p>Transition to the next step.</p>
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
-<p>Another introduction</p>
+<p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
+<p>Now, you will configure the Patroni <em>using a YAML file</em> to handle the PostgreSQL service in the droplets.</p>
+<p>Create a Patroni0.yml file at the location</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
 <h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
