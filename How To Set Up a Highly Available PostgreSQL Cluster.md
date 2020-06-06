@@ -39,9 +39,12 @@
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
-<p>First…</p>
-<p>Next…</p>
-<p>Finally…</p>
+<p>The <code>pip install</code> command is used to install additional Python packages.</p>
+<p>Execute the following command to install Patroni</p>
+<pre class=" language-command"><code class="prism  language-command">$ sudo pip install patroni
+</code></pre>
+<p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
+<p>Finally, you can configure the Patorni to handle PostgrSQL service.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
 <p>Now transition to the next step by telling the reader what’s next.</p>
 <h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing ETCD</h2>
