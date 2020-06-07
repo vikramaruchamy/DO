@@ -78,7 +78,8 @@
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
 <p>By default, it has 127.0.0.1 as the IP address. This IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number can be let it as it is as shown below.</p>
-<pre class=" language-postgres0"><code class="prism .yml language-postgres0">
+<pre class=" language-postgres0"><code class="prism .yml language-postgres0">[label /etc/postgres0.yml]
+
 restapi:
   listen: 111.111.111.111:8008
   connect_address: 111.111.111.111:8008 
