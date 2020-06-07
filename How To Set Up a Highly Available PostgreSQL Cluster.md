@@ -39,9 +39,9 @@
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
-<p>The <code>pip install</code> command is used to install additional Python packages.</p>
+<p>The <code>pip3 install</code> command is used to install additional Python packages.</p>
 <p>Execute the following command to install Patroni</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo pip install patroni
+<pre class=" language-command"><code class="prism  language-command">$ sudo pip3 install patroni
 </code></pre>
 <p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can configure the Patorni to handle PostgreSQL service running in each droplets.</p>
@@ -59,6 +59,8 @@
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
 <p>Now, you will configure the Patroni <em>using a YAML file</em> to handle the PostgreSQL service in the droplets.</p>
 <p>Create a Patroni0.yml file at the location</p>
+<p>Use <code>wget</code> to download it:</p>
+<p><a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">https://github.com/zalando/patroni/blob/master/postgres0.yml</a></p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
 <h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
