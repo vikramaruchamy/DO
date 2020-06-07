@@ -65,7 +65,7 @@
 <p>Now, your current working directory is /etc/.</p>
 <p>Next, you need to copy the Raw <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a> file from GitHub to the etc directory.</p>
 <p><code>curl</code> tool is used to copy data from a server to another server.</p>
-<p>Execute the below command to copy the file from GitHub.</p>
+<p>Execute the below command to copy the file from GitHub to your server.</p>
 <pre><code>curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
 <p>To -O option in the CURL command copies the file with the same name as the source. Here it creates a file named <em>postgres0.yml</em>.</p>
