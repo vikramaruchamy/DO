@@ -75,10 +75,21 @@
 <p>Execute the below command to open and edit the configuration file.</p>
 <pre><code>$ sudo vim postgres0.yml
 </code></pre>
-<p>Vim opens the file, press ‘i’ to enter to the insert mode in VIM editor.</p>
+<p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
-<p>By default, it has 127.0.0.1 as the IP address. This IP address needs to be updated with your current droplet IP address.</p>
-<p>Transition to the next step.</p>
+<p>By default, it has 127.0.0.1 as the IP address. This IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number can be let it as it is as shown below.</p>
+<pre class=" language-postgres0"><code class="prism .yml language-postgres0">
+restapi:
+  listen: 111.111.111.111:8008
+  connect_address: 111.111.111.111:8008 
+  
+postgresql:
+  listen: 111.111.111.111:5432
+  connect_address: 111.111.111.111:5432
+  
+</code></pre>
+<p>Now, press <code>:w</code> to save the changes to the file and exit the editor.</p>
+<p>Next, you need to configure the data directory.</p>
 <h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
