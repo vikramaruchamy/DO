@@ -64,17 +64,20 @@
 <pre class=" language-command"><code class="prism  language-command">$ cd /etc/
 </code></pre>
 <p>Now, your current working directory is /etc/.</p>
-<p>Next, you need to copy the Raw <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a> file from GitHub to the etc directory.</p>
+<p>Next, you need to copy the raw <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a> file from GitHub to the /etc/ directory.</p>
 <p><code>curl</code> tool is used to copy data from a server to another server.</p>
 <p>Execute the below command to copy the file from GitHub to your server.</p>
 <pre><code>$ curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
-<p>To -O option in the <code>curl</code> command copies the file with the same name as it is in the source. Here it creates a file named <em>postgres0.yml</em>.</p>
+<p>The -O option in the <code>curl</code> command copies the file with the same name as it is in the source. Here it creates a file named <em>postgres0.yml</em>.</p>
 <p>Now, you need to update the <em>postgres0.yml</em> file with the right configuration.</p>
-<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code> vim will open the file in the read only mode.</p>
+<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and edit the configuration file.</p>
 <pre><code>$ sudo vim postgres0.yml
 </code></pre>
+<p>Vim opens the file, press ‘i’ to enter to the insert mode in VIM editor.</p>
+<p>Now update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
+<p>By default, it has 127.0.0.1 as the IP address. This IP address needs to be updated with your current droplet IP address.</p>
 <p>Transition to the next step.</p>
 <h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
