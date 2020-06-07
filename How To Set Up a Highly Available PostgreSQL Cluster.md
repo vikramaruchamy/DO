@@ -57,8 +57,7 @@
 <p>Transition to the next step.</p>
 <h2 id="step-5-—-configuring-patroni">Step 5 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
-<p>Now, you will configure the Patroni <em>using a YAML file</em> in the <em>/etc/</em> to handle the PostgreSQL service.</p>
-<p>A default YAML file is available in the offical Patroni GitHub <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
+<p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/</em> to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
 <p>First you should navigate to the /etc/ directory to copy the file in that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
 <p>Execute the following command to navigate to the <em>/etc/</em> directory.</p>
 <pre class=" language-command"><code class="prism  language-command">$ cd /etc/
