@@ -25,6 +25,7 @@
 <p>-Five Ubuntu 20.04 server droplets set up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall.</p>
 <p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
 <p>-Ensure Python-3 is available in the three droplets where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a></p>
+<p>-Install Text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
 <p>-Reserve two droplets for installing etcd and HAProxy.</p>
 <!-- Example:&#10;&#10;* One Ubuntu 18.04 server with at least 1GB of RAM set up by following [the Ubuntu 18.04 initial server setup guide](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04), including a sudo non-root user and a firewall.&#10;&#10;* Nginx installed on your server, as shown in [How To Install Nginx on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04).&#10;&#10;* A domain name configured to point to your server. You can learn how to point domains to DigitalOcean Droplets by following the [How To Set Up a Host Name with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-host-name-with-digitalocean) tutorial.&#10;&#10;-->
 <h2 id="step-1-—-stopping-postgres-service">Step 1 <strong>—</strong> Stopping Postgres Service</h2>
@@ -58,7 +59,7 @@
 <h2 id="step-5-—-configuring-patroni">Step 5 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
 <p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/</em> to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
-<p>First you should navigate to the /etc/ directory to copy the file to that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
+<p>First, you should navigate to the /etc/ directory to copy the file to that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
 <p>Execute the following command to navigate to the <em>/etc/</em> directory.</p>
 <pre class=" language-command"><code class="prism  language-command">$ cd /etc/
 </code></pre>
@@ -69,6 +70,7 @@
 <pre><code>curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
 <p>To -O option in the <code>curl</code> command copies the file with the same name as it is in the source. Here it creates a file named <em>postgres0.yml</em>.</p>
+<p>Now you need to update the <em>postgres0.yml</em> file with the right configuration.</p>
 <p>Transition to the next step.</p>
 <h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
