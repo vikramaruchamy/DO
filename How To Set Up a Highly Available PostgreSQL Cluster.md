@@ -55,19 +55,22 @@
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
+<h2 id="step-5-—-configuring-patroni">Step 5 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
 <p>Now, you will configure the Patroni <em>using a YAML file</em> in the <em>/etc/</em> to handle the PostgreSQL service in the droplets. A default YAML file is available in the offical GitHub <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a> of the Patroni.</p>
 <p>First you should navigate to the /etc/ directory to copy the file in that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
 <p>Execute the following command to navigate to the <em>/etc/</em> directory.</p>
 <pre class=" language-command"><code class="prism  language-command">$ cd /etc/
 </code></pre>
-<p>Navigate to the /etc/ directory using the command <code>cd /etc/</code></p>
-<p>Use <code>wget</code> to download it:</p>
-<p><a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">https://github.com/zalando/patroni/blob/master/postgres0.yml</a></p>
-<p>Your content</p>
+<p>Now, your current working directory is /etc/.</p>
+<p>Next, you need to copy the Raw <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a> file from GitHub to the etc directory.</p>
+<p><code>curl</code> tool is used to trasfer data from a server to another server.</p>
+<p>Execute the below command to copy the file from GitHub.</p>
+<pre><code>curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
+</code></pre>
+<p>To -O option in the CURL command copies the file with the same name as the source. Here it creates a file named <em>postgres0.yml</em>.</p>
 <p>Transition to the next step.</p>
-<h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
+<h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
