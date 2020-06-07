@@ -68,7 +68,7 @@
 <p>Execute the below command to copy the file from GitHub to your server.</p>
 <pre><code>curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
-<p>To -O option in the CURL command copies the file with the same name as the source. Here it creates a file named <em>postgres0.yml</em>.</p>
+<p>To -O option in the <code>curl</code> command copies the file with the same name as the source. Here it creates a file named <em>postgres0.yml</em>.</p>
 <p>Transition to the next step.</p>
 <h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
