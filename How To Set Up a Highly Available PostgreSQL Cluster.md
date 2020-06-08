@@ -59,25 +59,25 @@
 <h2 id="step-5-—-configuring-patroni">Step 5 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
 <p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/</em> to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
-<p>First, you should navigate to the /etc/ directory to copy the file to that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
+<p>First, you should navigate to the /etc/ directory to copy the YAML file to that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
 <p>Execute the following command to navigate to the <em>/etc/</em> directory.</p>
 <pre class=" language-command"><code class="prism  language-command">$ cd /etc/
 </code></pre>
 <p>Now, your current working directory is /etc/.</p>
 <p>Next, you need to copy the raw <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a> file from GitHub to the /etc/ directory.</p>
 <p><code>curl</code> tool is used to copy data from a server to another server.</p>
-<p>Execute the below command to copy the file from GitHub to your server.</p>
+<p>Execute the below command to copy the YAML file from GitHub to your server.</p>
 <pre><code>$ curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
 <p>The -O option in the <code>curl</code> command copies the file with the same name as it is in the source. Here it creates a file named <em>postgres0.yml</em>.</p>
 <p>Now, you need to update the <em>postgres0.yml</em> file with the right configuration.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
-<p>Execute the below command to open and edit the configuration file.</p>
+<p>Execute the below command to open and update the configuration file.</p>
 <pre><code>$ sudo vim postgres0.yml
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
-<p>By default, it has 127.0.0.1 as the IP address. This IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number can be let it as it is as shown below.</p>
+<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number can be let it as it is:</p>
 <pre class=" language-postgres0"><code class="prism .yml language-postgres0">[label /etc/postgres0.yml]
 
 restapi:
@@ -89,7 +89,8 @@ postgresql:
   connect_address: 111.111.111.111:5432
   
 </code></pre>
-<p>Now, press <code>:w</code> to save the changes to the file and exit the editor.</p>
+<p>Now, press <code>:w</code> to save the changes to the file and exit the VIM editor.</p>
+<p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets where PostgreSQL is installed.</p>
 <p>Next, you need to configure the data directory.</p>
 <h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
