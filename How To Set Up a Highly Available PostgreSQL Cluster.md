@@ -76,7 +76,7 @@
 <pre><code>$ sudo vim postgres0.yml
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
-<p>Now update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
+<p>Now, update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
 <p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number can be let it as it is:</p>
 <pre class=" language-postgres0"><code class="prism .yml language-postgres0">[label /etc/postgres0.yml]
 
