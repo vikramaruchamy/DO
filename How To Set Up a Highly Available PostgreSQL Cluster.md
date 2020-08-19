@@ -18,16 +18,16 @@
 <!-- Our articles have a specific structure. Learn more at https://do.co/style/structure -->
 <p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the high availability.</p>
 <p>In this tutorial, you’ll set up the PostgreSQL with high availability using Patroni and HAProxy.</p>
-<p>When you’re finished, you will have a robust and highly available PostgreSQL cluster ready for production use.</p>
+<p>When you’re finished, you will have a robust and <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">highly available</a> PostgreSQL cluster ready for production use.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <!-- Prerequisites let you leverage existing tutorials so you don't have to repeat installation or setup steps in your tutorial. Learn more at https://do.co/style#prerequisites -->
 <p>Before you begin this guide, you’ll need the following:</p>
 <p>-Five Ubuntu 20.04 server droplets set up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall.</p>
-<p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
+<p>-To ensure you’re using the latest packages in the servers, update the installed package database in all the servers using <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-update-the-package-database-with-apt-get">Update the installed packages</a> and upgrade the packages to the latest version by using <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-upgrade-installed-packages-with-apt-get">upgrade packages.</a></p>
 <p>-Ensure Python-3 is available in the three droplets where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a></p>
+<p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
 <p>-Install VIM text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
 <p>-Reserve two droplets for installing etcd and HAProxy.</p>
-<!-- Example:&#10;&#10;* One Ubuntu 18.04 server with at least 1GB of RAM set up by following [the Ubuntu 18.04 initial server setup guide](https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-18-04), including a sudo non-root user and a firewall.&#10;&#10;* Nginx installed on your server, as shown in [How To Install Nginx on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04).&#10;&#10;* A domain name configured to point to your server. You can learn how to point domains to DigitalOcean Droplets by following the [How To Set Up a Host Name with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-host-name-with-digitalocean) tutorial.&#10;&#10;-->
 <h2 id="step-1-—-stopping-postgres-service">Step 1 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
@@ -40,45 +40,53 @@
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
-<p>The <code>pip3 install</code> command is used to install additional Python packages.</p>
+<p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
 <p>Execute the following command to install Patroni</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo pip3 install patroni
+<pre class=" language-command"><code class="prism  language-command">$ sudo apt-get install patroni
 </code></pre>
-<p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
-<p>Now, you can configure the Patorni to handle PostgreSQL service running in each droplets.</p>
+<p><strong>Note:</strong>  You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
+<p>Now, you can install the etcd to handle the distributed cluster.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
 <!--Now transition to the next step by telling the reader what's next.-->
 <h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing ETCD</h2>
-<p>Another introduction</p>
-<p>Your content</p>
-<p>Transition to the next step.</p>
+<p><strong>etcd</strong> is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.</p>
+<p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
+<p>Execute the following command to install etcd in the droplet reserved for <strong>etcd</strong>.</p>
+<pre class=" language-command"><code class="prism  language-command">$ sudo apt-get install etcd
+</code></pre>
+<p>Now, you can install HAProxy that provides high availability.</p>
 <h2 id="step-4-—-installing-haproxy">Step 4 <strong>—</strong> Installing HAProxy</h2>
+<p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.</p>
+<p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
+<p>Execute the following command to install etcd in the droplet reserved for <strong>haproxy</strong>.</p>
+<pre class=" language-command"><code class="prism  language-command">$ sudo apt-get install haproxy
+</code></pre>
+<p>Now all the installations are complete in the relevant servers and you’ll start the configuration of etcd, patroni and haproxy.</p>
+<h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
 <p>Another introduction</p>
 <p>Your content</p>
 <p>Transition to the next step.</p>
-<h2 id="step-5-—-configuring-patroni">Step 5 <strong>—</strong> Configuring Patroni</h2>
+<h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
-<p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/</em> to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
-<p>First, you should navigate to the /etc/ directory to copy the YAML file to that location. <code>cd</code> command can be used to navigate to the specified directory.</p>
+<p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/patroni/config.yml</em> to handle the PostgreSQL service. A default YAML file named <a href="http://config.yml.in">config.yml.in</a> is created during the installation of Patroni.</p>
+<p>First, you should navigate to the /etc/patroni/ directory to rename the file to <em>config.yml</em>. <code>cd</code> command can be used to navigate to the specified directory.</p>
 <p>Execute the following command to navigate to the <em>/etc/</em> directory.</p>
 <pre class=" language-command"><code class="prism  language-command">$ cd /etc/
 </code></pre>
-<p>Now, your current working directory is /etc/.</p>
-<p>Next, you need to copy the raw <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a> file from GitHub to the /etc/ directory.</p>
-<p><code>curl</code> tool is used to copy data from a server to another server.</p>
-<p>Execute the below command to copy the YAML file from GitHub to your server.</p>
-<pre><code>$ curl -O https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
+<p>Now, your current working directory is /etc/patroni/.</p>
+<p>Next, you need to rename the default YAML file from <em><a href="http://config.yml.in">config.yml.in</a></em> to <em>config.yml</em>. You can use <code>mv</code> command to rename the file.</p>
+<p>Execute the below command to rename the file.</p>
+<pre><code>$ sudo mv config.yml.in config.yml
 </code></pre>
-<p>The -O option in the <code>curl</code> command copies the file with the same name as it is in the source. Here it creates a file named <em>postgres0.yml</em>.</p>
-<p>Now, you need to update the <em>postgres0.yml</em> file with the right configuration.</p>
+<p>Now, you need to update the <em>config.yml</em> file with the right configuration.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
-<pre><code>$ sudo vim postgres0.yml
+<pre><code>$ sudo vim config.yml
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
-<p>Now, update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> and <em>postgresql sections</em> respectively.</p>
-<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number can be let it as it is:</p>
-<pre class=" language-postgres0"><code class="prism .yml language-postgres0">[label /etc/postgres0.yml]
+<p>Now, update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> section.</p>
+<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number should be updated with <em>8008</em>.</p>
+<pre class=" language-config"><code class="prism .yml language-config">[label /etc/patroni/config.yml]
 
 restapi:
   listen: 111.111.111.111:8008
@@ -89,13 +97,11 @@ postgresql:
   connect_address: 111.111.111.111:5432
   
 </code></pre>
-<p>Now, press <code>:w</code> to save the changes to the file and exit the VIM editor.</p>
+<p>update replicator accounts IP address with the three droplets IPS.<br>
+Update ETCH host IDs as well.</p>
+<p>Now, press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
 <p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets where PostgreSQL is installed.</p>
 <p>Next, you need to configure the data directory.</p>
-<h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring ETCD</h2>
-<p>Another introduction</p>
-<p>Your content</p>
-<p>Transition to the next step.</p>
 <h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
 <p>Another introduction</p>
 <p>Your content</p>
