@@ -66,14 +66,14 @@
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
 <p>Etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster. You’ve installed ETCD in the step3.</p>
 <p>Now, you will configure ETCD to handle the leader elections in the highly available cluster and store the state of the postgres cluster. Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
-<p>All the available configuration parameters for etcd is available in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. However, you ll use the necessary configurations flags to configure highly available cluster with default settings.</p>
+<p>All the available configuration parameters for etcd is available in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. However, you ll use the necessary configurations flags to configure highly available cluster with default settings as explained below.</p>
 <p>During the installation of the ETCD, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
 <pre><code>$ sudo vim /etc/default/etcd
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
-<p>Now the etcd default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address.</p>
+<p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address.</p>
 <p><strong>ETCD_LISTEN_PEER_URLS</strong></p>
 <p>This flag informs the etcd to accept incoming requests from its peers on the specified scheme://IP:port combinations.</p>
 <p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
@@ -91,8 +91,8 @@
 <p>This is the initial cluster configuration for bootstrapping. The key is the value of the <code>--name</code> flag for each node provided.</p>
 <p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
 <p>ETCD_INITIAL_CLUSTER=“default=http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380,”</p>
-<p><strong>ETCD_ADVERTISE_CLIENT_URLS</strong><br>
-This flag specifies the list of this member’s client URLs to advertise to the rest of the cluster. These URLs can contain domain names as well.</p>
+<p><strong>ETCD_ADVERTISE_CLIENT_URLS</strong></p>
+<p>This flag specifies the list of this member’s client URLs to advertise to the rest of the cluster. These URLs can contain domain names as well.</p>
 <p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
 <p>ETCD_ADVERTISE_CLIENT_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2379”</p>
 <p><strong>ETCD_INITIAL_CLUSTER_TOKEN</strong></p>
@@ -102,13 +102,13 @@ This flag specifies the list of this member’s client URLs to advertise to the 
 <p><strong>ETCD_INITIAL_CLUSTER_STATE</strong></p>
 <p>This flag is used to denote the Initial cluster state (“new” or “existing”). Set to <code>new</code> for all members present during initial static or DNS bootstrapping.</p>
 <p>ETCD_INITIAL_CLUSTER_STATE=“new”</p>
-<p>Now, press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
+<p>Press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
 <p>Now, you need to restart etcd for the configuration changes to be effective.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>restart</code> with <code>systemctl</code> to restart the system service.</p>
 <p>Execute the following command to restart the etcdservice.</p>
 <pre class=" language-command"><code class="prism  language-command">$ sudo systemctl restart etcd
 </code></pre>
-<p>Now etcd is running with your configurations.</p>
+<p>Now <em>etcd</em> is running with the updated configurations.</p>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
 <p>Execute the following command to check the status of the etcd service.</p>
 <pre class=" language-command"><code class="prism  language-command">$ sudo systemctl status etcd
