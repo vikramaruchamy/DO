@@ -64,8 +64,8 @@
 </code></pre>
 <p>Now all the installations are complete in the relevant servers and you’ll start the configuration of etcd, patroni and haproxy.</p>
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
-<p>Etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster.</p>
-<p>You’ve installed ETCD in the step3. Now, you will configure ETCD to handle the leader elections in the highly available cluster. You need to update the etcd configuration file to store the state of the postgres cluster. Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
+<p>Etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster. You’ve installed ETCD in the step3.</p>
+<p>Now, you will configure ETCD to handle the leader elections in the highly available cluster. You need to update the etcd configuration file to store the state of the postgres cluster. Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
 <p>All the available configuration parameters for etcd is available in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. However, you ll use the necessary configurations flags to configure highly available cluster with default settings.</p>
 <p>During the installation of the ETCD, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
