@@ -104,9 +104,35 @@ This flag specifies the list of this member’s client URLs to advertise to the 
 <p>ETCD_INITIAL_CLUSTER_STATE=“new”</p>
 <p>Now, press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
 <p>Now, you need to restart etcd for the configuration changes to be effective.</p>
-<p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
-<p>Execute the following command to stop the PostgreSQL service.</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl stop postgresql
+<p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>restart</code> with <code>systemctl</code> to restart the system service.</p>
+<p>Execute the following command to restart the etcdservice.</p>
+<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl restart etcd
+</code></pre>
+<p>Now etcd is running with your configurations.</p>
+<p>you can use status with the systemctl to check the status of the system service.</p>
+<p>execute the following command to check the status of the etcd service.</p>
+<pre class=" language-etcd"><code class="prism  language-etcd">[label etcd log]
+etcd.service - etcd - highly-available key value store
+     Loaded: loaded (/lib/systemd/system/etcd.service; enabled; vendor preset: enabled)
+     Active: active (running) since Thu 2020-08-27 14:03:57 UTC; 11h ago
+       Docs: https://github.com/coreos/etcd
+             man:etcd
+   Main PID: 14786 (etcd)
+      Tasks: 9 (limit: 1137)
+     Memory: 61.2M
+     CGroup: /system.slice/etcd.service
+             └─14786 /usr/bin/etcd
+
+Aug 27 14:03:57 do-04 etcd[14786]: 8e9e05c52164694d received MsgVoteResp from 8e9e05c52164694d at term 3
+Aug 27 14:03:57 do-04 etcd[14786]: 8e9e05c52164694d became leader at term 3
+Aug 27 14:03:57 do-04 etcd[14786]: raft.node: 8e9e05c52164694d elected leader 8e9e05c52164694d at term 3
+Aug 27 14:03:57 do-04 etcd[14786]: published {Name:do-04 ClientURLs:[http://157.245.111.222:2379]} to cluster cdf818194e3a8c32
+Aug 27 14:03:57 do-04 systemd[1]: Started etcd - highly-available key value store.
+Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
+Aug 27 14:03:57 do-04 etcd[14786]: serving insecure client requests on 157.245.111.222:2379, this is strongly discouraged!
+Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
+Aug 27 14:03:57 do-04 etcd[14786]: serving insecure client requests on 127.0.0.1:2379, this is strongly discouraged!
+Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less than 1s
 </code></pre>
 <h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
