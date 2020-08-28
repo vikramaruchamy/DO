@@ -109,8 +109,11 @@ This flag specifies the list of this member’s client URLs to advertise to the 
 <pre class=" language-command"><code class="prism  language-command">$ sudo systemctl restart etcd
 </code></pre>
 <p>Now etcd is running with your configurations.</p>
-<p>you can use status with the systemctl to check the status of the system service.</p>
-<p>execute the following command to check the status of the etcd service.</p>
+<p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
+<p>Execute the following command to check the status of the etcd service.</p>
+<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl status etcd
+</code></pre>
+<p>You will see the below messages if the etcd configuration is successful.</p>
 <pre class=" language-etcd"><code class="prism  language-etcd">[label etcd log]
 etcd.service - etcd - highly-available key value store
      Loaded: loaded (/lib/systemd/system/etcd.service; enabled; vendor preset: enabled)
