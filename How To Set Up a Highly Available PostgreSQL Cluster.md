@@ -25,42 +25,41 @@
 <p>-Five Ubuntu 20.04 server droplets set up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall.</p>
 <p>-To ensure you’re using the latest packages in the servers, update the installed package database in all the servers using <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-update-the-package-database-with-apt-get">Update the installed packages</a> and upgrade the packages to the latest version by using <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-upgrade-installed-packages-with-apt-get">upgrade packages.</a></p>
 <p>-Ensure Python-3 is available in the three droplets where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a></p>
-<p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a></p>
+<p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. These three droplets are referred as node-1, node-2, node-3 in the tutorial.</p>
 <p>-Install VIM text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
-<p>-Reserve two droplets for installing etcd and HAProxy.</p>
+<p>-Reserve two droplets for installing etcd and HAProxy. These droplets are referred as node-4 and node-5 respectively in the tutorial.</p>
 <h2 id="step-1-—-stopping-postgres-service">Step 1 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
 <p>Execute the following command to stop the PostgreSQL service.</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl stop postgresql
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl stop postgresql
 </code></pre>
 <p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed.</p>
-<p>Now the PostgreSQL service is stopped in all three droplets.</p>
+<p>Now the PostgreSQL service is stopped in all nodes(node-1,node-2, node-3).</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
 <p>The  <code>pip3 install</code>  command is used to install additional Python packages.</p>
-<p>Execute the following command to install Patroni</p>
-<pre><code>$ sudo pip3 install patroni
-
+<p>Execute the following command to install Patroni along with its dependencies psycopg2 and python-etcd.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2 python-etcd
 </code></pre>
-<p><strong>Note:</strong>  You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
+<p><strong>Note:</strong>  You should execute this command in all three droplets(node-1, node-2,node-3) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
 <!--Now transition to the next step by telling the reader what's next.-->
 <h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing ETCD</h2>
 <p><strong>etcd</strong> is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.</p>
 <p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
-<p>Execute the following command to install etcd in the droplet reserved for <strong>etcd</strong>.</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo apt-get install etcd
+<p>Execute the following command to install etcd in the node-4 reserved for <strong>etcd</strong>.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo apt-get install etcd
 </code></pre>
 <p>Now, you can install HAProxy that provides high availability.</p>
 <h2 id="step-4-—-installing-haproxy">Step 4 <strong>—</strong> Installing HAProxy</h2>
 <p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.</p>
 <p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
-<p>Execute the following command to install etcd in the droplet reserved for <strong>haproxy</strong>.</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo apt-get install haproxy
+<p>Execute the following command to install etcd in the node-5 reserved for <strong>haproxy</strong>.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo apt-get install haproxy
 </code></pre>
 <p>Now all the installations are complete in the relevant servers and you’ll start the configuration of etcd, patroni and haproxy.</p>
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
@@ -70,51 +69,52 @@
 <p>During the installation of the ETCD, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
-<pre><code>$ sudo vim /etc/default/etcd
+<pre class=" language-command"><code class="prism  language-command">sudo vim /etc/default/etcd
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address.</p>
-<p><strong>ETCD_LISTEN_PEER_URLS</strong></p>
+<h3 id="etcd-listen-peer-urls">ETCD LISTEN PEER URLS</h3>
 <p>This flag informs the etcd to accept incoming requests from its peers on the specified scheme://IP:port combinations.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
-<p>ETCD_LISTEN_PEER_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380”</p>
-<p><strong>ETCD_LISTEN_CLIENT_URLS</strong></p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
+<code>ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"</code></p>
+<h3 id="etcd-listen-client-urls">ETCD LISTEN CLIENT URLS</h3>
 <p>This flag informs the etcd to accept incoming requests from the clients on the specified scheme://IP:port combinations.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
-<p>ETCD_LISTEN_CLIENT_URLS=“<a href="http://localhost:2379">http://localhost:2379</a>,http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2379”</p>
-<p><strong>ETCD_INITIAL_ADVERTISE_PEER_URLS</strong></p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
+<code>ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"</code></p>
+<h3 id="etcd-initial-advertise-peer-urls">ETCD INITIAL ADVERTISE PEER URLS</h3>
 <p>This flag specifies the list of this member’s peer URLs to advertise to the rest of the cluster. These addresses are used for communicating etcd data around the cluster.</p>
 <p>At least one must be routable to all cluster members. These URLs can contain domain names as well.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
-<p>ETCD_INITIAL_ADVERTISE_PEER_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380”</p>
-<p><strong>ETCD_INITIAL_CLUSTER</strong></p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
+<code>ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"</code></p>
+<h3 id="etcd-initial-cluster">ETCD INITIAL CLUSTER</h3>
 <p>This is the initial cluster configuration for bootstrapping. The key is the value of the <code>--name</code> flag for each node provided.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
-<p>ETCD_INITIAL_CLUSTER=“default=http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380,”</p>
-<p><strong>ETCD_ADVERTISE_CLIENT_URLS</strong></p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
+<code>ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380,"</code></p>
+<h3 id="etcd-advertise-client-urls">ETCD ADVERTISE CLIENT URLS</h3>
 <p>This flag specifies the list of this member’s client URLs to advertise to the rest of the cluster. These URLs can contain domain names as well.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
-<p>ETCD_ADVERTISE_CLIENT_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2379”</p>
-<p><strong>ETCD_INITIAL_CLUSTER_TOKEN</strong></p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
+<code>ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"</code></p>
+<h3 id="etcd-initial-cluster-token">ETCD INITIAL CLUSTER TOKEN</h3>
 <p>This flag specifies the Initial cluster token for the etcd cluster during bootstrap.</p>
 <p>Update this parameter with a token name and it should look like below. Default token name is “etcd-cluster”.  If you want to use the default name itself, then just uncomment this parameter in the configuration file.</p>
-<p>ETCD_INITIAL_CLUSTER_TOKEN=“etcd-cluster”</p>
-<p><strong>ETCD_INITIAL_CLUSTER_STATE</strong></p>
+<p><code>ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"</code></p>
+<h3 id="etcd-initial-cluster-state">ETCD INITIAL CLUSTER STATE</h3>
 <p>This flag is used to denote the Initial cluster state (“new” or “existing”). Set to <code>new</code> for all members present during initial static or DNS bootstrapping.</p>
-<p>ETCD_INITIAL_CLUSTER_STATE=“new”</p>
+<p><code>ETCD_INITIAL_CLUSTER_STATE="new"</code></p>
 <p>Press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
 <p>Now, you need to restart etcd for the configuration changes to be effective.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>restart</code> with <code>systemctl</code> to restart the system service.</p>
 <p>Execute the following command to restart the etcdservice.</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl restart etcd
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl restart etcd
 </code></pre>
 <p>Now <em>etcd</em> is running with the updated configurations.</p>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
 <p>Execute the following command to check the status of the etcd service.</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl status etcd
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl status etcd
 </code></pre>
 <p>You will see the below messages if the etcd configuration is successful.</p>
-<pre class=" language-etcd"><code class="prism  language-etcd">[label etcd log]
+<pre><code>etcd log
+[label etcd log]
 etcd.service - etcd - highly-available key value store
      Loaded: loaded (/lib/systemd/system/etcd.service; enabled; vendor preset: enabled)
      Active: active (running) since Thu 2020-08-27 14:03:57 UTC; 11h ago
@@ -132,45 +132,37 @@ Aug 27 14:03:57 do-04 etcd[14786]: raft.node: 8e9e05c52164694d elected leader 8e
 Aug 27 14:03:57 do-04 etcd[14786]: published {Name:do-04 ClientURLs:[http://157.245.111.222:2379]} to cluster cdf818194e3a8c32
 Aug 27 14:03:57 do-04 systemd[1]: Started etcd - highly-available key value store.
 Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
-Aug 27 14:03:57 do-04 etcd[14786]: serving insecure client requests on 157.245.111.222:2379, this is strongly discouraged!
-Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
-Aug 27 14:03:57 do-04 etcd[14786]: serving insecure client requests on 127.0.0.1:2379, this is strongly discouraged!
 Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less than 1s
 </code></pre>
 <h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
-<p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/patroni/config.yml</em> to handle the PostgreSQL service. A default YAML file named <a href="http://config.yml.in">config.yml.in</a> is created during the installation of Patroni.</p>
-<p>First, you should navigate to the /etc/patroni/ directory to rename the file to <em>config.yml</em>. <code>cd</code> command can be used to navigate to the specified directory.</p>
-<p>Execute the following command to navigate to the <em>/etc/</em> directory.</p>
-<pre class=" language-command"><code class="prism  language-command">$ cd /etc/
+<p>Now, you will configure Patroni  <em>using a YAML file</em>  in the  <em>/etc/patroni/</em> directory  to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub  <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
+<p>Create a directory patroni inside the /etc/ folder using the <code>mkdir</code> command as below.</p>
+<pre class=" language-command"><code class="prism  language-command">mkdir /etc/patroni
+</code></pre>
+<p>You should navigate to the /etc/patroni/ directory to copy the YAML file to that location.  <code>cd</code>  command can be used to navigate to the specified directory.</p>
+<p>Execute the following command to navigate to the  <em>/etc/patroni/</em>  directory.</p>
+<pre class=" language-command"><code class="prism  language-command">cd /etc/patroni/
 </code></pre>
 <p>Now, your current working directory is /etc/patroni/.</p>
-<p>Next, you need to rename the default YAML file from <em><a href="http://config.yml.in">config.yml.in</a></em> to <em>config.yml</em>. You can use <code>mv</code> command to rename the file.</p>
-<p>Execute the below command to rename the file.</p>
-<pre><code>$ sudo mv config.yml.in config.yml
+<p>Next, you need to copy the raw  <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a>  file from GitHub to the /etc/patroni/ directory.</p>
+<p><code>curl</code>  tool is used to copy data from a server to another server.</p>
+<p>Execute the below command to copy the YAML file from GitHub to your server.</p>
+<pre class=" language-command"><code class="prism  language-command">curl -o config.yml https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
-<p>Now, you need to update the <em>config.yml</em> file with the right configuration.</p>
-<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
+<p>The -o option in the  <code>curl</code>  command copies the file with the filename specified in the command. Here it creates a file named config.yml.</p>
+<p>Now, you need to update the config.yml  file with the right configuration.</p>
+<p>All the available configuration parameters for patroni is available in the <a href="https://patroni.readthedocs.io/en/latest/SETTINGS.html">official patroni docs page</a>. However, you ll use the necessary configurations to configure highly available cluster with basic settings as explained below.</p>
+<p><code>vim</code>  tool is used edit the file. Use  <code>sudo vim</code>  to open the file in the edit mode. If you do not use  <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
-<pre><code>$ sudo vim config.yml
+<pre class=" language-command"><code class="prism  language-command">sudo vim config.yml
 </code></pre>
-<p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
-<p>Now, update the <em>listen</em> and <em>connect_address</em> under <em>restapi</em> section.</p>
-<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with <code>&lt;^&gt;your_server_ip&lt;^&gt;</code> address and Port number should be updated with <em>8008</em>.</p>
-<pre class=" language-config"><code class="prism .yml language-config">[label /etc/patroni/config.yml]
-
-restapi:
-  listen: 111.111.111.111:8008
-  connect_address: 111.111.111.111:8008 
-  
-postgresql:
-  listen: 111.111.111.111:5432
-  connect_address: 111.111.111.111:5432
-  
+<p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
+<p>Now, update the  <em>listen</em>  and  <em>connect_address</em>  under  <em>restapi</em>  and  <em>postgresql sections</em>  respectively.</p>
+<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with  node1 <code>&lt;^&gt;node1_server_ip&lt;^&gt;</code>  address and Port number can be let it as it is:</p>
+<pre><code>[label /etc/patroni/config.yml]
 </code></pre>
-<p>update replicator accounts IP address with the three droplets IPS.<br>
-Update ETCH host IDs as well.</p>
-<p>Now, press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
+<p>Now, press  <code>:w</code>  to save the changes to the file and exit the VIM editor.</p>
 <p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets where PostgreSQL is installed.</p>
 <p>Next, you need to configure the data directory.</p>
 <h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
