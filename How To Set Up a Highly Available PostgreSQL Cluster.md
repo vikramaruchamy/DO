@@ -40,9 +40,10 @@
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
-<p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
+<p>The  <code>pip3 install</code>  command is used to install additional Python packages.</p>
 <p>Execute the following command to install Patroni</p>
-<pre class=" language-command"><code class="prism  language-command">$ sudo apt-get install patroni
+<pre><code>$ sudo pip3 install patroni
+
 </code></pre>
 <p><strong>Note:</strong>  You should execute this command in all three droplets where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
@@ -63,9 +64,50 @@
 </code></pre>
 <p>Now all the installations are complete in the relevant servers and you’ll start the configuration of etcd, patroni and haproxy.</p>
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
-<p>Another introduction</p>
-<p>Your content</p>
-<p>Transition to the next step.</p>
+<p>Etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster.</p>
+<p>You’ve installed ETCD in the step3. Now, you will configure ETCD to handle the leader elections in the highly available cluster. You need to update the etcd configuration file to store the state of the postgres cluster. Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
+<p>All the available configuration parameters for etcd is available in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. However, you ll use the necessary configurations flags to configure highly available cluster with default settings.</p>
+<p>During the installation of the ETCD, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
+<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
+<p>Execute the below command to open and update the configuration file.</p>
+<pre><code>$ sudo vim /etc/default/etcd
+</code></pre>
+<p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
+<p>Now the etcd default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address.</p>
+<p><strong>ETCD_LISTEN_PEER_URLS</strong></p>
+<p>This flag informs the etcd to accept incoming requests from its peers on the specified scheme://IP:port combinations.</p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
+<p>ETCD_LISTEN_PEER_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380”</p>
+<p><strong>ETCD_LISTEN_CLIENT_URLS</strong></p>
+<p>This flag informs the etcd to accept incoming requests from the clients on the specified scheme://IP:port combinations.</p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
+<p>ETCD_LISTEN_CLIENT_URLS=“<a href="http://localhost:2379">http://localhost:2379</a>,http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2379”</p>
+<p><strong>ETCD_INITIAL_ADVERTISE_PEER_URLS</strong></p>
+<p>This flag specifies the list of this member’s peer URLs to advertise to the rest of the cluster. These addresses are used for communicating etcd data around the cluster.</p>
+<p>At least one must be routable to all cluster members. These URLs can contain domain names as well.</p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
+<p>ETCD_INITIAL_ADVERTISE_PEER_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380”</p>
+<p><strong>ETCD_INITIAL_CLUSTER</strong></p>
+<p>This is the initial cluster configuration for bootstrapping. The key is the value of the <code>--name</code> flag for each node provided.</p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
+<p>ETCD_INITIAL_CLUSTER=“default=http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2380,”</p>
+<p><strong>ETCD_ADVERTISE_CLIENT_URLS</strong><br>
+This flag specifies the list of this member’s client URLs to advertise to the rest of the cluster. These URLs can contain domain names as well.</p>
+<p>Update this parameter with your etcd droplet ip address and it should look like below.</p>
+<p>ETCD_ADVERTISE_CLIENT_URLS=“http://<code>&lt;^&gt;your_etcd_server_ip&lt;^&gt;</code>:2379”</p>
+<p><strong>ETCD_INITIAL_CLUSTER_TOKEN</strong></p>
+<p>This flag specifies the Initial cluster token for the etcd cluster during bootstrap.</p>
+<p>Update this parameter with a token name and it should look like below. Default token name is “etcd-cluster”.  If you want to use the default name itself, then just uncomment this parameter in the configuration file.</p>
+<p>ETCD_INITIAL_CLUSTER_TOKEN=“etcd-cluster”</p>
+<p><strong>ETCD_INITIAL_CLUSTER_STATE</strong></p>
+<p>This flag is used to denote the Initial cluster state (“new” or “existing”). Set to <code>new</code> for all members present during initial static or DNS bootstrapping.</p>
+<p>ETCD_INITIAL_CLUSTER_STATE=“new”</p>
+<p>Now, press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
+<p>Now, you need to restart etcd for the configuration changes to be effective.</p>
+<p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
+<p>Execute the following command to stop the PostgreSQL service.</p>
+<pre class=" language-command"><code class="prism  language-command">$ sudo systemctl stop postgresql
+</code></pre>
 <h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
 <p>Now, you will configure Patroni <em>using a YAML file</em> in the <em>/etc/patroni/config.yml</em> to handle the PostgreSQL service. A default YAML file named <a href="http://config.yml.in">config.yml.in</a> is created during the installation of Patroni.</p>
