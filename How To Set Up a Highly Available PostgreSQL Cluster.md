@@ -65,43 +65,49 @@
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
 <p>Etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster. You’ve installed ETCD in the step3.</p>
 <p>Now, you will configure ETCD to handle the leader elections in the highly available cluster and store the state of the postgres cluster. Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
-<p>All the available configuration parameters for etcd is available in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. However, you ll use the necessary configurations flags to configure highly available cluster with default settings as explained below.</p>
+<p>However, you ll use the necessary configurations flags to configure highly available cluster with default settings as explained below.</p>
 <p>During the installation of the ETCD, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo vim /etc/default/etcd
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
-<p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address.</p>
-<h3 id="etcd-listen-peer-urls">ETCD LISTEN PEER URLS</h3>
-<p>This flag informs the etcd to accept incoming requests from its peers on the specified scheme://IP:port combinations.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
-<code>ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"</code></p>
-<h3 id="etcd-listen-client-urls">ETCD LISTEN CLIENT URLS</h3>
-<p>This flag informs the etcd to accept incoming requests from the clients on the specified scheme://IP:port combinations.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
-<code>ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"</code></p>
-<h3 id="etcd-initial-advertise-peer-urls">ETCD INITIAL ADVERTISE PEER URLS</h3>
-<p>This flag specifies the list of this member’s peer URLs to advertise to the rest of the cluster. These addresses are used for communicating etcd data around the cluster.</p>
-<p>At least one must be routable to all cluster members. These URLs can contain domain names as well.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
-<code>ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"</code></p>
-<h3 id="etcd-initial-cluster">ETCD INITIAL CLUSTER</h3>
-<p>This is the initial cluster configuration for bootstrapping. The key is the value of the <code>--name</code> flag for each node provided.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
-<code>ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380,"</code></p>
-<h3 id="etcd-advertise-client-urls">ETCD ADVERTISE CLIENT URLS</h3>
-<p>This flag specifies the list of this member’s client URLs to advertise to the rest of the cluster. These URLs can contain domain names as well.</p>
-<p>Update this parameter with your etcd droplet ip address and it should look like below.<br>
-<code>ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"</code></p>
-<h3 id="etcd-initial-cluster-token">ETCD INITIAL CLUSTER TOKEN</h3>
-<p>This flag specifies the Initial cluster token for the etcd cluster during bootstrap.</p>
-<p>Update this parameter with a token name and it should look like below. Default token name is “etcd-cluster”.  If you want to use the default name itself, then just uncomment this parameter in the configuration file.</p>
-<p><code>ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"</code></p>
-<h3 id="etcd-initial-cluster-state">ETCD INITIAL CLUSTER STATE</h3>
-<p>This flag is used to denote the Initial cluster state (“new” or “existing”). Set to <code>new</code> for all members present during initial static or DNS bootstrapping.</p>
-<p><code>ETCD_INITIAL_CLUSTER_STATE="new"</code></p>
+<p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address as give below.</p>
+<pre><code>[label /etc/default/etcd]
+ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"
+ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"
+ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380,"
+ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"
+ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
+ETCD_INITIAL_CLUSTER_STATE="new"
+</code></pre>
 <p>Press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
+<p>You can learn more about etcd configuration parameters in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. Here’s what each line in this file is for:</p>
+<ul>
+<li>
+<p>ETCD LISTEN PEER URLS  - This flag informs the etcd to accept incoming requests from its peers on the specified scheme://IP:port combinations.</p>
+</li>
+<li>
+<p>ETCD LISTEN CLIENT URLS - This flag informs the etcd to accept incoming requests from the clients on the specified scheme://IP:port combinations.</p>
+</li>
+<li>
+<p>ETCD INITIAL ADVERTISE PEER URLS - This flag specifies the list of this member’s peer URLs to advertise to the rest of the cluster. These addresses are used for communicating etcd data around the cluster.<br>
+At least one must be routable to all cluster members. These URLs can contain domain names as well.</p>
+</li>
+<li>
+<p>ETCD INITIAL CLUSTER - This is the initial cluster configuration for bootstrapping. The key is the value of the <code>--name</code> flag for each node provided.</p>
+</li>
+<li>
+<p>ETCD ADVERTISE CLIENT URLS - This flag specifies the list of this member’s client URLs to advertise to the rest of the cluster. These URLs can contain domain names as well.</p>
+</li>
+<li>
+<p>ETCD INITIAL CLUSTER TOKEN - This flag specifies the Initial cluster token for the etcd cluster during bootstrap.  Default token name is “etcd-cluster”.</p>
+</li>
+<li>
+<p>ETCD INITIAL CLUSTER STATE - This flag is used to denote the Initial cluster state (“new” or “existing”). Set to <code>new</code> for all members present during initial static or DNS bootstrapping.</p>
+</li>
+</ul>
 <p>Now, you need to restart etcd for the configuration changes to be effective.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>restart</code> with <code>systemctl</code> to restart the system service.</p>
 <p>Execute the following command to restart the etcdservice.</p>
@@ -113,8 +119,7 @@
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl status etcd
 </code></pre>
 <p>You will see the below messages if the etcd configuration is successful.</p>
-<pre><code>etcd log
-[label etcd log]
+<pre><code>[label etcd log]
 etcd.service - etcd - highly-available key value store
      Loaded: loaded (/lib/systemd/system/etcd.service; enabled; vendor preset: enabled)
      Active: active (running) since Thu 2020-08-27 14:03:57 UTC; 11h ago
@@ -158,7 +163,136 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 <pre class=" language-command"><code class="prism  language-command">sudo vim config.yml
 </code></pre>
 <p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
-<p>Now, update the parameters as below.</p>
+<p>Update the highlighted parameters in the config.yml.</p>
+<pre><code>scope: &lt;^&gt;postgres&lt;^&gt;
+namespace: /service/
+name: &lt;^&gt;node1&lt;^&gt;
+
+restapi:
+  listen: &lt;^&gt;node-1_server_ip&lt;^&gt;:8008
+  connect_address: &lt;^&gt;node-1_server_ip&lt;^&gt;:8008
+#  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+#  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
+#  authentication:
+#    username: username
+#    password: password
+
+# ctl:
+#   insecure: false # Allow connections to SSL sites without certs
+#   certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+#   cacert: /etc/ssl/certs/ssl-cacert-snakeoil.pem
+
+etcd:
+  #Provide host to do the initial discovery of the cluster topology:
+  host: 127.0.0.1:2379
+  #Or use "hosts" to provide multiple endpoints
+  #Could be a comma separated string:
+  #hosts: host1:port1,host2:port2
+  #or an actual yaml list:
+  #hosts:
+  #- host1:port1
+  #- host2:port2
+  #Once discovery is complete Patroni will use the list of advertised clientURLs
+  #It is possible to change this behavior through by setting:
+  #use_proxies: true
+
+#raft:
+#  data_dir: .
+#  self_addr: 127.0.0.1:2222
+#  partner_addrs:
+#  - 127.0.0.1:2223
+#  - 127.0.0.1:2224
+
+bootstrap:
+  # this section will be written into Etcd:/&lt;namespace&gt;/&lt;scope&gt;/config after initializing new cluster
+  # and all other cluster members will use it as a `global configuration`
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+#    master_start_timeout: 300
+#    synchronous_mode: false
+    #standby_cluster:
+      #host: 127.0.0.1
+      #port: 1111
+      #primary_slot_name: patroni
+    postgresql:
+      use_pg_rewind: true
+#      use_slots: true
+      parameters:
+#        wal_level: hot_standby
+#        hot_standby: "on"
+#        wal_keep_segments: 8
+#        max_wal_senders: 10
+#        max_replication_slots: 10
+#        wal_log_hints: "on"
+#        archive_mode: "on"
+#        archive_timeout: 1800s
+#        archive_command: mkdir -p ../wal_archive &amp;&amp; test ! -f ../wal_archive/%f &amp;&amp; cp %p ../wal_archive/%f
+#      recovery_conf:
+#        restore_command: cp ../wal_archive/%f %p
+
+  # some desired options for 'initdb'
+  initdb:  # Note: It needs to be a list (some options need values, others are switches)
+  - encoding: UTF8
+  - data-checksums
+
+  pg_hba:  # Add following lines to pg_hba.conf after running 'initdb'
+  # For kerberos gss based connectivity (discard @.*$)
+  #- host replication replicator 127.0.0.1/32 gss include_realm=0
+  #- host all all 0.0.0.0/0 gss include_realm=0
+  - host replication replicator 127.0.0.1/32 md5
+  - host all all 0.0.0.0/0 md5
+#  - hostssl all all 0.0.0.0/0 md5
+
+  # Additional script to be launched after initial cluster creation (will be passed the connection URL as parameter)
+# post_init: /usr/local/bin/setup_cluster.sh
+
+  # Some additional users users which needs to be created after initializing new cluster
+  users:
+    admin:
+      password: admin
+      options:
+        - createrole
+        - createdb
+
+postgresql:
+  listen: &lt;^&gt;node-1_server_ip&lt;^&gt;:5432
+  connect_address: &lt;^&gt;node-1_server_ip&lt;^&gt;:5432
+  data_dir: data/postgresql0
+#  bin_dir:
+#  config_dir:
+  pgpass: /tmp/pgpass0
+  authentication:
+    replication:
+      username: replicator
+      password: rep-pass
+    superuser:
+      username: postgres
+      password: zalando
+    rewind:  # Has no effect on postgres 10 and lower
+      username: rewind_user
+      password: rewind_password
+  # Server side kerberos spn
+#  krbsrvname: postgres
+  parameters:
+    # Fully qualified kerberos ticket file for the running user
+    # same as KRB5CCNAME used by the GSS
+#   krb_server_keyfile: /var/spool/keytabs/postgres
+    unix_socket_directories: '.'
+
+#watchdog:
+#  mode: automatic # Allowed values: off, automatic, required
+#  device: /dev/watchdog
+#  safety_margin: 5
+
+tags:
+    nofailover: false
+    noloadbalance: false
+    clonefrom: false
+    nosync: false
+</code></pre>
 <p>Now, update the  <em>listen</em>  and  <em>connect___address</em>  under  <em>restapi</em>  and  <em>postgresql</em> sections  respectively.</p>
 <p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with  <code>&lt;^&gt;node1_server_ip&lt;^&gt;</code>  address and Port number can be let it as it is:</p>
 <pre><code>[label /etc/patroni/config.yml]
