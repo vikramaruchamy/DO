@@ -500,6 +500,13 @@ listen postgres
     server postgresql_&lt;^&gt;node-3-server-ip&lt;^&gt;_5432 &lt;^&gt;node-3-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
 </code></pre>
 <p>In the listen postgres section, you’ll update the details of the Postgres servers IPs which is used by HAproxy to connect to Postgres master server. You can learn more about HAproxy configuration parameters in the <a href="http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#2.5">official HAProxy docs page</a>.</p>
+<p>Now, you need to restart HAProxy for handling the high availability with the updated settings.</p>
+<p>The  <code>systemctl</code>  command is used to manage the  <em>systemd</em>  services. Use  <code>restart</code>  with  <code>systemctl</code>  to start the system service.</p>
+<p>Execute the following command to start the patroni.</p>
+<pre><code>sudo systemctl restart haproxy
+
+</code></pre>
+<p>Now  <em>HAProxy</em>  is running and its handling the postgresql database instance with High availability.</p>
 <p>Now, test the highly available postgresql using the HAProxy.</p>
 <h2 id="step-8-—-testing-the-setup">Step 8 <strong>—</strong> Testing the Setup</h2>
 <p>You can test the highly available cluster using the HAProxy dashboard.</p>
