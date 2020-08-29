@@ -74,11 +74,11 @@
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address as give below.</p>
 <pre><code>[label /etc/default/etcd]
-ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"
-ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"
-ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380"
-ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2380,"
-ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;your_etcd_server_ip&lt;^&gt;`:2379"
+ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2380"
+ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2379"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2380"
+ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2380,"
+ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2379"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 </code></pre>
@@ -157,14 +157,14 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 </code></pre>
 <p>The -o option in the  <code>curl</code>  command copies the file with the filename specified in the command. Here it creates a file named config.yml.</p>
 <p>Now, you need to update the config.yml  file with the right configuration.</p>
-<p>All the available configuration parameters for patroni is available in the <a href="https://patroni.readthedocs.io/en/latest/SETTINGS.html">official patroni docs page</a>. However, you ll use the necessary configurations to configure highly available cluster with basic settings as explained below.</p>
 <p><code>vim</code>  tool is used edit the file. Use  <code>sudo vim</code>  to open the file in the edit mode. If you do not use  <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo vim config.yml
 </code></pre>
 <p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
 <p>Update the highlighted parameters in the config.yml.</p>
-<pre><code>scope: &lt;^&gt;postgres&lt;^&gt;
+<pre><code>[label /etc/patroni/config.yml]
+scope: &lt;^&gt;postgres&lt;^&gt;
 namespace: /service/
 name: &lt;^&gt;node1&lt;^&gt;
 
@@ -184,7 +184,7 @@ restapi:
 
 etcd:
   #Provide host to do the initial discovery of the cluster topology:
-  host: 127.0.0.1:2379
+  host: &lt;^&gt;node-4_server_ip&lt;^&gt;:2379
   #Or use "hosts" to provide multiple endpoints
   #Could be a comma separated string:
   #hosts: host1:port1,host2:port2
@@ -243,6 +243,9 @@ bootstrap:
   #- host replication replicator 127.0.0.1/32 gss include_realm=0
   #- host all all 0.0.0.0/0 gss include_realm=0
   - host replication replicator 127.0.0.1/32 md5
+  &lt;^&gt;- host replication replicator node-1_server_ip/0 md5&lt;^&gt;
+  &lt;^&gt;- host replication replicator node-2_server_ip/0 md5&lt;^&gt;
+  &lt;^&gt;- host replication replicator node-3_server_ip/0 md5&lt;^&gt;
   - host all all 0.0.0.0/0 md5
 #  - hostssl all all 0.0.0.0/0 md5
 
@@ -260,17 +263,17 @@ bootstrap:
 postgresql:
   listen: &lt;^&gt;node-1_server_ip&lt;^&gt;:5432
   connect_address: &lt;^&gt;node-1_server_ip&lt;^&gt;:5432
-  data_dir: data/postgresql0
+  data_dir: &lt;^&gt;/data/patroni&lt;^&gt;
 #  bin_dir:
 #  config_dir:
   pgpass: /tmp/pgpass0
   authentication:
     replication:
       username: replicator
-      password: rep-pass
+      password: &lt;^&gt;rep-pass&lt;^&gt;
     superuser:
       username: postgres
-      password: zalando
+      password: &lt;^&gt;zalando&lt;^&gt;
     rewind:  # Has no effect on postgres 10 and lower
       username: rewind_user
       password: rewind_password
@@ -293,13 +296,148 @@ tags:
     clonefrom: false
     nosync: false
 </code></pre>
-<p>Now, update the  <em>listen</em>  and  <em>connect___address</em>  under  <em>restapi</em>  and  <em>postgresql</em> sections  respectively.</p>
-<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with  <code>&lt;^&gt;node1_server_ip&lt;^&gt;</code>  address and Port number can be let it as it is:</p>
-<pre><code>[label /etc/patroni/config.yml]
-</code></pre>
+<p>You can learn more about patroi configuration parameters in the <a href="https://patroni.readthedocs.io/en/latest/SETTINGS.html">official patroni docs page</a>. Here’s what each line in this file is for in the different sections of the file:</p>
+<p>Global section:</p>
+<ul>
+<li>scope - Name for the highly available postgres cluster</li>
+<li>namespace -path within the configuration store where Patroni will keep information about the cluster. Default value: “/service”.</li>
+<li>name - the name of the host. Must be unique for the cluster. for e.g. (node-1 in the first server, node-2 in the second server and so on).</li>
+</ul>
+<p>RestAPI section:</p>
+<ul>
+<li>listen - IP address (or hostname) and port that Patroni will listen to for the REST API - to provide also the same health checks and cluster messaging between the participating nodes.</li>
+<li>connect_address - IP address (or hostname) and port, to access the Patroni’s <a href="https://patroni.readthedocs.io/en/latest/rest_api.html#rest-api">REST API</a>.</li>
+</ul>
+<p>etcd section:</p>
+<ul>
+<li>host - information for the etcd endpoint for the clusters.</li>
+</ul>
+<p>Bootstrap configuration section:</p>
+<ul>
+<li>pg_hba - list of lines that you should add to pg_hba.conf. Client authentication is controlled by this pg_hba.conf file. You can read more about this file in the  <a href="https://www.postgresql.org/docs/9.1/auth-pg-hba-conf.html">official postgresql page</a>.<br>
+You will add the lines of the three nodes which can be used for authentication during the replication between the servers.</li>
+</ul>
+<p>postgresql section:</p>
+<ul>
+<li>listen - IP address + port that Postgres listens to. It must be accessible from other nodes in the cluster.</li>
+<li>connect_address - IP address + port through which Postgres is accessible from other nodes and applications.</li>
+<li>data_dir - The location of the Postgres data directory, either <a href="https://patroni.readthedocs.io/en/latest/existing_data.html#existing-data">existing</a> or to be initialized by Patroni.</li>
+<li>authentication - Authentication section has the username and passwords specified for the superuser, replication user. Superuser is used by patroni to connect to the postgres and replication user is used by replicas to access master via streaming replication. You can specify the passwords for the superuser and replication user in the password properties of the users respectively.</li>
+</ul>
 <p>Now, press  <code>:w</code>  to save the changes to the file and exit the VIM editor.</p>
-<p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets where PostgreSQL is installed.</p>
-<p>Next, you need to configure the data directory.</p>
+<p>Next, you need to configure the data directory. In the Patroni configuration file, data directory is specified as <em>/data/patroni</em>.</p>
+<p>The superuser(<em>postgres</em>) mentioned in the configuration file, should be able to write into the data directory.</p>
+<p>Create a directory patroni inside the /data/ folder using the <code>mkdir</code> command as below.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo mkdir -p /data/patroni
+</code></pre>
+<p>Now, make the superuser <em>postgres</em> the owner of /data/patroni.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo chown postgres:postgres /data/patroni
+</code></pre>
+<p>In order to prevent anybody else from changing this directory, change the permissions on this directory to make it accessible only to the <em>postgres</em> user(owner of the directory).</p>
+<pre class=" language-command"><code class="prism  language-command">sudo chmod 700 /data/patroni
+</code></pre>
+<p>Next, you need to create a systemd script that will allow us to start, stop and monitor Patroni.</p>
+<p>You need to create a file <em>/etc/systemd/system/patroni.service</em> on all three nodes (node-1, node-2, node-3 ) using the vim command.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo vim /etc/systemd/system/patroni.service
+</code></pre>
+<p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
+<p>Update the file with the below contents.</p>
+<pre><code>[label /etc/systemd/system/patroni.service]
+[Unit]
+Description=High availability PostgreSQL Cluster
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=postgres
+Group=postgres
+ExecStart=/usr/local/bin/patroni &lt;^&gt;/etc/patroni/config.yml&lt;^&gt;
+KillMode=process
+TimeoutSec=30
+Restart=no
+
+[Install]
+WantedBy=multi-user.targ
+</code></pre>
+<p>As highlighted above, you need to update the location of the patroni configuration file.  You can learn more about the systemd unit and unit file in <a href="https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files">this</a> tutorial.</p>
+<p>Now, you need to start Patroni for handling the postgres database.</p>
+<p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>start</code> with <code>systemctl</code> to start the system service.</p>
+<p>Execute the following command to start the patroni.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl start patroni
+</code></pre>
+<p>Now <em>patroni</em> is running and its handling the postgresql database.</p>
+<p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
+<p>Execute the following command to check the status of the patroni service.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl status patroni
+</code></pre>
+<p>You will see the below messages if the Patroni configuration is successful.</p>
+<pre><code>[label node-1 patroni logs]
+● patroni.service - High availability PostgreSQL Cluster
+     Loaded: loaded (/etc/systemd/system/patroni.service; disabled; vendor preset: enabled)
+     Active: active (running) since Fri 2020-08-28 00:41:53 UTC; 1 day 3h ago
+   Main PID: 3045 (patroni)
+      Tasks: 14 (limit: 1137)
+     Memory: 76.4M
+     CGroup: /system.slice/patroni.service
+             ├─3045 /usr/bin/python3 /usr/local/bin/patroni /etc/patroni/config.yml
+             ├─3071 postgres -D /data/patroni --config-file=/data/patroni/postgresql.conf --listen_addresses=128.199.30.42 --port=5432 --cluster_name=postgres --wal_level=replica --hot_standby=on --max_connections=100 --max_wal_senders=&gt;
+             ├─3076 postgres: postgres: checkpointer
+             ├─3077 postgres: postgres: background writer
+             ├─3078 postgres: postgres: stats collector
+             ├─3083 postgres: postgres: postgres postgres 128.199.30.42(51028) idle
+             ├─3183 postgres: postgres: walwriter
+             ├─3184 postgres: postgres: autovacuum launcher
+             ├─3185 postgres: postgres: logical replication launcher
+             └─3191 postgres: postgres: walsender replicator 128.199.30.45(58144) streaming 0/5000550
+
+Aug 29 04:19:41 do-01 patroni[3045]: 2020-08-29 04:19:41,453 INFO: Lock owner: node1; I am node1
+Aug 29 04:19:41 do-01 patroni[3045]: 2020-08-29 04:19:41,458 INFO: no action.  i am the leader with the lock
+Aug 29 04:19:51 do-01 patroni[3045]: 2020-08-29 04:19:51,453 INFO: Lock owner: node1; I am node1
+Aug 29 04:19:51 do-01 patroni[3045]: 2020-08-29 04:19:51,458 INFO: no action.  i am the leader with the lock
+Aug 29 04:20:01 do-01 patroni[3045]: 2020-08-29 04:20:01,453 INFO: Lock owner: node1; I am node1
+Aug 29 04:20:01 do-01 patroni[3045]: 2020-08-29 04:20:01,459 INFO: no action.  i am the leader with the lock
+Aug 29 04:20:11 do-01 patroni[3045]: 2020-08-29 04:20:11,453 INFO: Lock owner: node1; I am node1
+Aug 29 04:20:11 do-01 patroni[3045]: 2020-08-29 04:20:11,458 INFO: no action.  i am the leader with the lock
+Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,453 INFO: Lock owner: node1; I am node1
+Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,460 INFO: no action.  i am the leader with the lock
+
+</code></pre>
+<p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets(node-2 and node-3) where PostgreSQL is installed. Just update the node-2_ip_address and node-3_IP_address wherever applicable.</p>
+<p>One you complete the patroni configuration in the node-2 and node-3, these nodes will join in the cluster and follow the leader node-1.</p>
+<p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the patroni in node-2.</p>
+<p>Execute the following command to check the status of the patroni service.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl status patroni
+</code></pre>
+<p>You will see the below messages if the node-2 is joined in the cluster successfully.</p>
+<pre><code>[label node-2 patroni logs]
+● patroni.service - High availability PostgreSQL Cluster
+     Loaded: loaded (/etc/systemd/system/patroni.service; disabled; vendor preset: enabled)
+     Active: active (running) since Thu 2020-08-27 14:05:32 UTC; 1 day 14h ago
+   Main PID: 983 (patroni)
+      Tasks: 12 (limit: 1137)
+     Memory: 101.8M
+     CGroup: /system.slice/patroni.service
+             ├─ 983 /usr/bin/python3 /usr/local/bin/patroni /etc/patroni/config.yml
+             ├─3617 postgres -D /data/patroni --config-file=/data/patroni/postgresql.conf --listen_addresses=128.199.30.45 --port=5432 --cluster_name=postgres --wal_level=replica --hot_standby=on --max_connections=100 --max_wal_senders=&gt;
+             ├─3619 postgres: postgres: startup   recovering 000000030000000000000005
+             ├─3620 postgres: postgres: checkpointer
+             ├─3621 postgres: postgres: background writer
+             ├─3622 postgres: postgres: stats collector
+             ├─3623 postgres: postgres: walreceiver   streaming 0/5000550
+             └─3627 postgres: postgres: postgres postgres 128.199.30.45(57556) idle
+
+Aug 29 04:23:11 do-02 patroni[983]: 2020-08-29 04:23:11,437 INFO: no action.  i am a secondary and i am following a leader
+Aug 29 04:23:21 do-02 patroni[983]: 2020-08-29 04:23:21,432 INFO: Lock owner: node1; I am node2
+Aug 29 04:23:21 do-02 patroni[983]: 2020-08-29 04:23:21,433 INFO: does not have lock
+Aug 29 04:23:21 do-02 patroni[983]: 2020-08-29 04:23:21,437 INFO: no action.  i am a secondary and i am following a leader
+Aug 29 04:23:31 do-02 patroni[983]: 2020-08-29 04:23:31,433 INFO: Lock owner: node1; I am node2
+Aug 29 04:23:31 do-02 patroni[983]: 2020-08-29 04:23:31,433 INFO: does not have lock
+Aug 29 04:23:31 do-02 patroni[983]: 2020-08-29 04:23:31,439 INFO: no action.  i am a secondary and i am following a leader
+Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,434 INFO: Lock owner: node1; I am node2
+Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,434 INFO: does not have lock
+Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i am a secondary and i am following a leader
+
+</code></pre>
 <h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
 <p>Another introduction</p>
 <p>Your content</p>
