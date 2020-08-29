@@ -502,7 +502,7 @@ listen postgres
 <p>In the listen postgres section, you’ll update the details of the Postgres servers IPs which is used by HAproxy to connect to Postgres master server. You can learn more about HAproxy configuration parameters in the <a href="http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#2.5">official HAProxy docs page</a>.</p>
 <p>Now, you need to restart HAProxy for handling the high availability with the updated settings.</p>
 <p>The  <code>systemctl</code>  command is used to manage the  <em>systemd</em>  services. Use  <code>restart</code>  with  <code>systemctl</code>  to start the system service.</p>
-<p>Execute the following command to start the patroni.</p>
+<p>Execute the following command to restart the HAProxy.</p>
 <pre><code>sudo systemctl restart haproxy
 
 </code></pre>
