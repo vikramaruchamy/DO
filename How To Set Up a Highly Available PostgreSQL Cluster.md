@@ -28,6 +28,24 @@
 <p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. These three droplets are referred as node-1, node-2, node-3 in the tutorial.</p>
 <p>-Install VIM text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
 <p>-Reserve two droplets for installing etcd and HAProxy. These droplets are referred as node-4 and node-5 respectively in the tutorial.</p>
+<p>-Set up the firewall for the nodes as below configuration.</p>
+<ul>
+<li>
+<p>Port 5432 of node-1, node-2 and node-3 should be accessible by the alternate postgres nodes.</p>
+</li>
+<li>
+<p>Port 5432 of both node-1, node-2 and node-3 should be accessible from node-5.</p>
+</li>
+<li>
+<p>Port 8008 of both node-1, node-2 and node-3 should be accessible from node-5.</p>
+</li>
+<li>
+<p>Port 2379 of node-4 should be accessible from node-1, node-2 and node-3.</p>
+</li>
+<li>
+<p>Port 7000 of  node-5 should be accessible from every IP address.</p>
+</li>
+</ul>
 <h2 id="step-1-—-stopping-postgres-service">Step 1 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
@@ -41,7 +59,7 @@
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
 <p>The  <code>pip3 install</code>  command is used to install additional Python packages.</p>
-<p>Execute the following command to install Patroni along with its dependencies psycopg2 and python-etcd.</p>
+<p>Execute the following command to install <em>Patroni</em> along with its dependencies <em>psycopg2</em> and <em>python-etcd</em>.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2 python-etcd
 </code></pre>
 <p>Patroni uses utilities that come installed with postgres, located in the  <strong>/usr/lib/postgresql/&lt;<sup>&gt;12&lt;</sup>&gt;/bin</strong>  directory by default. You need to create symbolic links in the PATH to ensure that Patroni can find the utilities.</p>
@@ -300,7 +318,7 @@ tags:
     clonefrom: false
     nosync: false
 </code></pre>
-<p>You can learn more about patroi configuration parameters in the <a href="https://patroni.readthedocs.io/en/latest/SETTINGS.html">official patroni docs page</a>. Here’s what each line in this file is for in the different sections of the file:</p>
+<p>You can learn more about Patroni configuration parameters in the <a href="https://patroni.readthedocs.io/en/latest/SETTINGS.html">official patroni docs page</a>. Here’s what each line in this file is for in the different sections of the file.</p>
 <p>Global section:</p>
 <ul>
 <li>scope - Name for the highly available postgres cluster</li>
@@ -341,7 +359,7 @@ You will add the lines of the three nodes which can be used for authentication d
 <pre class=" language-command"><code class="prism  language-command">sudo chmod 700 /data/patroni
 </code></pre>
 <p>Next, you need to create a systemd script that will allow us to start, stop and monitor Patroni.</p>
-<p>You need to create a file <em>/etc/systemd/system/patroni.service</em> on all three nodes (node-1, node-2, node-3 ) using the vim command.</p>
+<p>You need to create a file <em>/etc/systemd/system/patroni.service</em> using the vim command.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo vim /etc/systemd/system/patroni.service
 </code></pre>
 <p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
@@ -452,7 +470,7 @@ Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i 
 <pre class=" language-command"><code class="prism  language-command">sudo vim /etc/haproxy/haproxy.cfg
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
-<p>update the file with the following content.</p>
+<p>Update the file with the following content.</p>
 <pre><code>[label /etc/haproxy/haproxy.cfg]
 global
     maxconn 100
@@ -481,10 +499,16 @@ listen postgres
     server postgresql_&lt;^&gt;node-2_server_ip&lt;^&gt;_5432 &lt;^&gt;node-2_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
     server postgresql_&lt;^&gt;node-3_server_ip&lt;^&gt;_5432 &lt;^&gt;node-3_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
 </code></pre>
+<p>In the listen postgres section, you’ll update the details of the Postgres servers IPs which is used by HAproxy to connect to Postgres master server. You can learn more about HAproxy configuration parameters in the <a href="http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#2.5">official HAProxy docs page</a>.</p>
+<p>Now, test the highly available postgresql using the HAProxy.</p>
 <h2 id="step-8-—-testing-the-setup">Step 8 <strong>—</strong> Testing the Setup</h2>
-<p>Another introduction</p>
-<p>Your content</p>
-<p>Transition to the next step.</p>
+<p>You can test the highly available cluster using the HAProxy dashboard.</p>
+<p>In your preferred web browser, enter the http://&lt;<sup>&gt;node-5_IP_address&lt;</sup>&gt;:7000 to open the HAProxy dashboard which looks like the below image.</p>
+<p><img src="https://imgur.com/o0KFtlO" alt="HAproxy dashboard page"></p>
+<p>In the postgres section, the green highlighted line denotes the postgres node which is currently acting as the master. Now,  shutdown the node-1 or stop the patroni service in the node-1, you’ll be able to see another node from the cluster becomes the master. Refresh the HAproxy dashboard page and you’ll see the node-2 which has become the master as shown below.</p>
+<p><img src="https://imgur.com/4ZxTY8X" alt="HAproxy dashboard page2"></p>
+<p>When you restart the node-1 or start the patroni service, then node-1 will join the cluster, sync and follow the leader node-2.</p>
+<p>You now have the highly available postgres up and running.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this article, you have set up a robust and highly available PostgreSQL cluster.</p>
 <p>Now you can improve it further by</p>
@@ -492,8 +516,6 @@ listen postgres
 <li>adding larger etcd cluster to improve availability</li>
 <li>adding HAProxy server and configure IP failover to create a highly available HAproxy cluster</li>
 </ul>
-<!-- Speak to reader benefits of this technique or procedure and optionally provide places for further exploration. -->
-<!-- Some examples of how to mark up various things&#10;&#10;This is _italics_ and this is **bold**.&#10;&#10;Only use italics and bold for specific things. Learn more at https://do.co/style#bold-and-italics&#10;&#10;This is `inline code`. Use it for referencing package names and commands.&#10;&#10;Here's a command someone types in the Terminal:&#10;&#10;```command&#10;&#10;sudo nano /etc/nginx/sites-available/default&#10;&#10;```&#10;&#10;Here's a configuration file. The label on the first line lets you clearly state the file that's being shown or modified:&#10;&#10;```nginx&#10;&#10;[label /etc/nginx/sites-available/default]&#10;&#10;server {&#10;&#10;listen 80 default_server;&#10;&#10;listen [::]:80 default_server ipv6only=on;&#10;&#10;root &lt;^&gt;/usr/share/nginx/html&lt;^&gt;;&#10;&#10;index index.html index.htm;&#10;&#10;server_name localhost;&#10;&#10;location / {&#10;&#10;try_files $uri $uri/ =404;&#10;&#10;}&#10;&#10;}&#10;&#10;```&#10;&#10;Here's output from a command:&#10;&#10;```&#10;&#10;[secondary_label Output]&#10;&#10;Could not connect to Redis at 127.0.0.1:6379: Connection refused&#10;&#10;```&#10;&#10;Learn about formatting commands and terminal output at https://do.co/style#code&#10;&#10;Key presses should be written in ALLCAPS with in-line code formatting: `ENTER`.&#10;&#10;Use a plus symbol (+) if keys need to be pressed simultaneously: `CTRL+C`.&#10;&#10;This is a &lt;^&gt;variable&lt;^&gt;.&#10;&#10;This is an `&lt;^&gt;in-line code variable&lt;^&gt;`&#10;&#10;Learn more about how to use variables to highlight important items at https://do.co/style#variables&#10;&#10;Use `&lt;^&gt;your_server_ip&lt;^&gt;` when referencing the IP of the server. Use `111.111.111.111` and `222.222.222.222` if you need other IP addresses in examples.&#10;&#10;Learn more about host names and domains at https://do.co/style#users-hostnames-and-domains&#10;&#10;&lt;$&gt;[note]&#10;&#10;**Note:** This is a note.&#10;&#10;&lt;$&gt;&#10;&#10;&lt;$&gt;[warning]&#10;&#10;**Warning:** This is a warning.&#10;&#10;&lt;$&gt;&#10;&#10;Learn more about notes at https://do.co/style#notes-and-warnings&#10;&#10;Screenshots should be in PNG format and hosted on imgur. Embed them in the article using the following format:&#10;&#10;![Alt text for screen readers](/path/to/img.png)&#10;&#10;Learn more about images at https://do.co/style#images-and-other-assets&#10;&#10;-->
 </div>
 </body>
 
