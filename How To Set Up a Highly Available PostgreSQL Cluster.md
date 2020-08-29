@@ -44,7 +44,7 @@
 <p>Execute the following command to install Patroni along with its dependencies psycopg2 and python-etcd.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2 python-etcd
 </code></pre>
-<p>Patroni uses utilities that come installed with postgres, located in the  <strong>/usr/lib/postgresql/12/bin</strong>  directory by default. You need to create symbolic links in the PATH to ensure that Patroni can find the utilities.</p>
+<p>Patroni uses utilities that come installed with postgres, located in the  <strong>/usr/lib/postgresql/&lt;<sup>&gt;12&lt;</sup>&gt;/bin</strong>  directory by default. You need to create symbolic links in the PATH to ensure that Patroni can find the utilities.</p>
 <p><code>ln</code> command with <code>-s</code> option is used to create symbolic links. Execute the below command to create the symbolic link.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo ln -s /usr/lib/postgresql/&lt;^&gt;12&lt;^&gt;/bin/* /usr/sbin/
 </code></pre>
@@ -70,7 +70,6 @@
 <h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring ETCD</h2>
 <p>Etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster. You’ve installed ETCD in the step3.</p>
 <p>Now, you will configure ETCD to handle the leader elections in the highly available cluster and store the state of the postgres cluster. Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
-<p>However, you ll use the necessary configurations flags to configure highly available cluster with default settings as explained below.</p>
 <p>During the installation of the ETCD, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
@@ -443,10 +442,45 @@ Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,434 INFO: does not have 
 Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i am a secondary and i am following a leader
 
 </code></pre>
+<p>Postgresql cluster is up and running. Now, you’ll configure HAProxy which can be used to connect to Master Postgresql node.</p>
 <h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
-<p>Another introduction</p>
-<p>Your content</p>
-<p>Transition to the next step.</p>
+<p>HAProxy is free, open source software that provides a high availability load balancer.</p>
+<p>You can use HAProxy to connect to the master node in the configured Postgresql cluster. All Postgres clients (your applications, <code>psql</code>, etc.) will connect to HAProxy which will make sure you connect to the master in the configured postgres cluster. You’ve installed it in node-5 in the step4 of the turorial.</p>
+<p>During the installation of the HAProxy, a default haproxy.cfg file is created in the location <em>/etc/haproxy/haproxy.cfg</em>.</p>
+<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
+<p>Execute the below command to open and update the configuration file.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo vim /etc/haproxy/haproxy.cfg
+</code></pre>
+<p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
+<p>update the file with the following content.</p>
+<pre><code>[label /etc/haproxy/haproxy.cfg]
+global
+    maxconn 100
+
+defaults
+    log global
+    mode tcp
+    retries 2
+    timeout client 30m
+    timeout connect 4s
+    timeout server 30m
+    timeout check 5s
+
+listen stats
+    mode http
+    bind *:7000
+    stats enable
+    stats uri /
+
+listen postgres
+    bind *:5000
+    option httpchk
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
+    server postgresql_&lt;^&gt;node-1_server_ip&lt;^&gt;_5432 &lt;^&gt;node-1_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
+    server postgresql_&lt;^&gt;node-2_server_ip&lt;^&gt;_5432 &lt;^&gt;node-2_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
+    server postgresql_&lt;^&gt;node-3_server_ip&lt;^&gt;_5432 &lt;^&gt;node-3_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
+</code></pre>
 <h2 id="step-8-—-testing-the-setup">Step 8 <strong>—</strong> Testing the Setup</h2>
 <p>Another introduction</p>
 <p>Your content</p>
