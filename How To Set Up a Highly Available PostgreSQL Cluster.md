@@ -96,11 +96,11 @@
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address as give below.</p>
 <pre><code>[label /etc/default/etcd]
-ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2380"
-ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2379"
-ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2380"
-ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2380,"
-ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2379"
+ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;node-4-server-ip&lt;^&gt;`:2380"
+ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;node-4-server-ip&lt;^&gt;`:2379"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;node-4-server-ip&lt;^&gt;`:2380"
+ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;node-4-server-ip&lt;^&gt;`:2380,"
+ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;node-4-server-ip&lt;^&gt;`:2379"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 </code></pre>
@@ -191,8 +191,8 @@ namespace: /service/
 name: &lt;^&gt;node1&lt;^&gt;
 
 restapi:
-  listen: &lt;^&gt;node-1_server-ip&lt;^&gt;:8008
-  connect_address: &lt;^&gt;node-1_server-ip&lt;^&gt;:8008
+  listen: &lt;^&gt;node-1-server-ip&lt;^&gt;:8008
+  connect_address: &lt;^&gt;node-1-server-ip&lt;^&gt;:8008
 #  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
 #  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
 #  authentication:
@@ -424,7 +424,7 @@ Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,453 INFO: Lock owner: n
 Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,460 INFO: no action.  i am the leader with the lock
 
 </code></pre>
-<p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets(node-2 and node-3) where PostgreSQL is installed. Just update the node-2_ip_address and node-3_IP_address wherever applicable.</p>
+<p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets(node-2 and node-3) where PostgreSQL is installed. Update the node-2-ip-address and node-3-IP-address wherever applicable.</p>
 <p>One you complete the patroni configuration in the node-2 and node-3, these nodes will join in the cluster and follow the leader node-1.</p>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the patroni in node-2.</p>
 <p>Execute the following command to check the status of the patroni service.</p>
@@ -497,13 +497,13 @@ listen postgres
     default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
     server postgresql_&lt;^&gt;node-1-server-ip&lt;^&gt;_5432 &lt;^&gt;node-1-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
     server postgresql_&lt;^&gt;node-2-server-ip&lt;^&gt;_5432 &lt;^&gt;node-2-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
-    server postgresql_&lt;^&gt;node-3-server-ip&lt;^&gt;_5432 &lt;^&gt;node-3_server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
+    server postgresql_&lt;^&gt;node-3-server-ip&lt;^&gt;_5432 &lt;^&gt;node-3-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
 </code></pre>
 <p>In the listen postgres section, you’ll update the details of the Postgres servers IPs which is used by HAproxy to connect to Postgres master server. You can learn more about HAproxy configuration parameters in the <a href="http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#2.5">official HAProxy docs page</a>.</p>
 <p>Now, test the highly available postgresql using the HAProxy.</p>
 <h2 id="step-8-—-testing-the-setup">Step 8 <strong>—</strong> Testing the Setup</h2>
 <p>You can test the highly available cluster using the HAProxy dashboard.</p>
-<p>In your preferred web browser, enter the http://&lt;<sup>&gt;node-5_IP_address&lt;</sup>&gt;:7000 to open the HAProxy dashboard which looks like the below image.</p>
+<p>In your preferred web browser, enter the http://&lt;<sup>&gt;node-5-IP-address&lt;</sup>&gt;:7000 to open the HAProxy dashboard which looks like the below image.</p>
 <p><img src="https://imgur.com/o0KFtlO" alt="HAproxy dashboard page"></p>
 <p>In the postgres section, the green highlighted line denotes the postgres node which is currently acting as the master. Now,  shutdown the node-1 or stop the patroni service in the node-1, you’ll be able to see another node from the cluster becomes the master. Refresh the HAproxy dashboard page and you’ll see the node-2 which has become the master as shown below.</p>
 <p><img src="https://imgur.com/4ZxTY8X" alt="HAproxy dashboard page2"></p>
