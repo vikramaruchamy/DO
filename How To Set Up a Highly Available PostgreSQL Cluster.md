@@ -96,11 +96,11 @@
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now the <em>etcd</em> default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address as give below.</p>
 <pre><code>[label /etc/default/etcd]
-ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2380"
-ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2379"
-ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2380"
-ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2380,"
-ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;node-4_server_ip&lt;^&gt;`:2379"
+ETCD_LISTEN_PEER_URLS="http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2380"
+ETCD_LISTEN_CLIENT_URLS="http://localhost:2379,http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2379"
+ETCD_INITIAL_ADVERTISE_PEER_URLS="http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2380"
+ETCD_INITIAL_CLUSTER="default=http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2380,"
+ETCD_ADVERTISE_CLIENT_URLS="http://`&lt;^&gt;node-4_server-ip&lt;^&gt;`:2379"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 </code></pre>
@@ -191,8 +191,8 @@ namespace: /service/
 name: &lt;^&gt;node1&lt;^&gt;
 
 restapi:
-  listen: &lt;^&gt;node-1_server_ip&lt;^&gt;:8008
-  connect_address: &lt;^&gt;node-1_server_ip&lt;^&gt;:8008
+  listen: &lt;^&gt;node-1_server-ip&lt;^&gt;:8008
+  connect_address: &lt;^&gt;node-1_server-ip&lt;^&gt;:8008
 #  certfile: /etc/ssl/certs/ssl-cert-snakeoil.pem
 #  keyfile: /etc/ssl/private/ssl-cert-snakeoil.key
 #  authentication:
@@ -206,7 +206,7 @@ restapi:
 
 etcd:
   #Provide host to do the initial discovery of the cluster topology:
-  host: &lt;^&gt;node-4_server_ip&lt;^&gt;:2379
+  host: &lt;^&gt;node-4-server-ip&lt;^&gt;:2379
   #Or use "hosts" to provide multiple endpoints
   #Could be a comma separated string:
   #hosts: host1:port1,host2:port2
@@ -265,9 +265,9 @@ bootstrap:
   #- host replication replicator 127.0.0.1/32 gss include_realm=0
   #- host all all 0.0.0.0/0 gss include_realm=0
   - host replication replicator 127.0.0.1/32 md5
-  &lt;^&gt;- host replication replicator node-1_server_ip/0 md5&lt;^&gt;
-  &lt;^&gt;- host replication replicator node-2_server_ip/0 md5&lt;^&gt;
-  &lt;^&gt;- host replication replicator node-3_server_ip/0 md5&lt;^&gt;
+  &lt;^&gt;- host replication replicator node-1-server-ip/0 md5&lt;^&gt;
+  &lt;^&gt;- host replication replicator node-2-server-ip/0 md5&lt;^&gt;
+  &lt;^&gt;- host replication replicator node-3-server-ip/0 md5&lt;^&gt;
   - host all all 0.0.0.0/0 md5
 #  - hostssl all all 0.0.0.0/0 md5
 
@@ -283,8 +283,8 @@ bootstrap:
         - createdb
 
 postgresql:
-  listen: &lt;^&gt;node-1_server_ip&lt;^&gt;:5432
-  connect_address: &lt;^&gt;node-1_server_ip&lt;^&gt;:5432
+  listen: &lt;^&gt;node-1-server-ip&lt;^&gt;:5432
+  connect_address: &lt;^&gt;node-1-server-ip&lt;^&gt;:5432
   data_dir: &lt;^&gt;/data/patroni&lt;^&gt;
 #  bin_dir:
 #  config_dir:
@@ -495,9 +495,9 @@ listen postgres
     option httpchk
     http-check expect status 200
     default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
-    server postgresql_&lt;^&gt;node-1_server_ip&lt;^&gt;_5432 &lt;^&gt;node-1_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
-    server postgresql_&lt;^&gt;node-2_server_ip&lt;^&gt;_5432 &lt;^&gt;node-2_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
-    server postgresql_&lt;^&gt;node-3_server_ip&lt;^&gt;_5432 &lt;^&gt;node-3_server_ip&lt;^&gt;:5432 maxconn 100 check port 8008
+    server postgresql_&lt;^&gt;node-1-server-ip&lt;^&gt;_5432 &lt;^&gt;node-1-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
+    server postgresql_&lt;^&gt;node-2-server-ip&lt;^&gt;_5432 &lt;^&gt;node-2-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
+    server postgresql_&lt;^&gt;node-3-server-ip&lt;^&gt;_5432 &lt;^&gt;node-3_server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
 </code></pre>
 <p>In the listen postgres section, you’ll update the details of the Postgres servers IPs which is used by HAproxy to connect to Postgres master server. You can learn more about HAproxy configuration parameters in the <a href="http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#2.5">official HAProxy docs page</a>.</p>
 <p>Now, test the highly available postgresql using the HAProxy.</p>
