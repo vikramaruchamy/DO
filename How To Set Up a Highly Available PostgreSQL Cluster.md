@@ -44,6 +44,11 @@
 <p>Execute the following command to install Patroni along with its dependencies psycopg2 and python-etcd.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2 python-etcd
 </code></pre>
+<p>Patroni uses utilities that come installed with postgres, located in the  <strong>/usr/lib/postgresql/12/bin</strong>  directory by default. You need to create symbolic links in the PATH to ensure that Patroni can find the utilities.</p>
+<p><code>ln</code> command with <code>-s</code> option is used to create symbolic links. Execute the below command to create the symbolic link.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo ln -s /usr/lib/postgresql/&lt;^&gt;12&lt;^&gt;/bin/* /usr/sbin/
+</code></pre>
+<p>Make sure you replace postgresql version according to the version installed.</p>
 <p><strong>Note:</strong>  You should execute this command in all three droplets(node-1, node-2, node-3) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
