@@ -35,7 +35,7 @@
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl stop postgresql
 </code></pre>
 <p><strong>Note:</strong> You should execute this command in all three droplets where PostgreSQL is installed.</p>
-<p>Now the PostgreSQL service is stopped in all nodes(node-1,node-2, node-3).</p>
+<p>Now the PostgreSQL service is stopped in all nodes(node-1, node-2, node-3).</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
@@ -44,7 +44,7 @@
 <p>Execute the following command to install Patroni along with its dependencies psycopg2 and python-etcd.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2 python-etcd
 </code></pre>
-<p><strong>Note:</strong>  You should execute this command in all three droplets(node-1, node-2,node-3) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
+<p><strong>Note:</strong>  You should execute this command in all three droplets(node-1, node-2, node-3) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
 <!--Now transition to the next step by telling the reader what's next.-->
@@ -158,8 +158,9 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 <pre class=" language-command"><code class="prism  language-command">sudo vim config.yml
 </code></pre>
 <p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
-<p>Now, update the  <em>listen</em>  and  <em>connect_address</em>  under  <em>restapi</em>  and  <em>postgresql sections</em>  respectively.</p>
-<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with  node1 <code>&lt;^&gt;node1_server_ip&lt;^&gt;</code>  address and Port number can be let it as it is:</p>
+<p>Now, update the parameters as below.</p>
+<p>Now, update the  <em>listen</em>  and  <em>connect___address</em>  under  <em>restapi</em>  and  <em>postgresql</em> sections  respectively.</p>
+<p>By default, it has 127.0.0.1 as the IP address. This default IP address needs to be updated with  <code>&lt;^&gt;node1_server_ip&lt;^&gt;</code>  address and Port number can be let it as it is:</p>
 <pre><code>[label /etc/patroni/config.yml]
 </code></pre>
 <p>Now, press  <code>:w</code>  to save the changes to the file and exit the VIM editor.</p>
