@@ -28,7 +28,7 @@
 <p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. These three droplets are referred as node-1, node-2, node-3 in the tutorial.</p>
 <p>-Install VIM text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
 <p>-Reserve two droplets for installing etcd and HAProxy. These droplets are referred as node-4 and node-5 respectively in the tutorial.</p>
-<p>-Set up the firewall for the nodes as below configuration.</p>
+<p>-<a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">Set up the firewall rules</a> for the nodes as below.</p>
 <ul>
 <li>
 <p>Port 5432 of node-1, node-2 and node-3 should be accessible by the alternate postgres nodes.</p>
