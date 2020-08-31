@@ -25,7 +25,7 @@
 <p>-Five Ubuntu 20.04 server droplets set up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall.</p>
 <p>-To ensure you’re using the latest packages in the servers, update the installed package database in all the servers using the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-update-the-package-database-with-apt-get">Update the installed packages</a> and upgrade the packages to the latest version by using <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-upgrade-installed-packages-with-apt-get">upgrade packages.</a></p>
 <p>-Ensure Python-3 is available in the three droplets where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a></p>
-<p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. These three droplets are referred as node-1, node-2, node-3 in the tutorial.</p>
+<p>-Install PostgreSQL in three droplets by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. Just follow step-1 of postgres installation tutorial. Other steps should be ignored. These three droplets are referred as node-1, node-2, node-3 in the tutorial.</p>
 <p>-Install VIM text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
 <p>-Reserve two droplets for installing etcd and HAProxy. These droplets are referred as node-4 and node-5 respectively in the tutorial.</p>
 <p>-<a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">Set up the firewall rules</a> for the nodes as below.</p>
@@ -58,15 +58,15 @@
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
-<p>The  <code>pip3 install</code>  command is used to install additional Python packages.</p>
-<p>Execute the following command to install <strong>Patroni</strong> along with its dependencies <strong>psycopg2</strong> and <strong>python-etcd</strong>.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2 python-etcd
-</code></pre>
 <p>Patroni uses utilities that come installed with postgres, located in the  <strong>/usr/lib/postgresql/&lt;<sup>&gt;12&lt;</sup>&gt;/bin</strong>  directory by default. You need to create symbolic links in the PATH to ensure that Patroni can find the utilities.</p>
 <p><code>ln</code> command with <code>-s</code> option is used to create symbolic links. Execute the below command to create the symbolic link.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo ln -s /usr/lib/postgresql/&lt;^&gt;12&lt;^&gt;/bin/* /usr/sbin/
 </code></pre>
 <p>Make sure you replace postgresql version according to the version installed.</p>
+<p>The  <code>pip3 install</code>  command is used to install additional Python packages.</p>
+<p>Execute the following command to install <strong>Patroni</strong> along with its dependencies <strong>psycopg2-binary</strong> and <strong>python-etcd</strong>.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2-binary python-etcd
+</code></pre>
 <p><strong>Note:</strong>  You should execute this command in all three droplets(node-1, node-2, node-3) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
 <!--&#10;&#10;If showing a command, explain the command first by talking about what it does. Then show the command.&#10;&#10;If showing a configuration file, try to show only the relevant parts and explain what needs to change.&#10;&#10;-->
@@ -138,6 +138,10 @@ At least one must be routable to all cluster members. These URLs can contain dom
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl restart etcd
 </code></pre>
 <p>Now etcd is running with the updated configurations.</p>
+<p>Use <code>enable</code> with <code>systemctl</code> to enable etcd service to be started automatically after every system reboot.</p>
+<p>Execute the following command to enable automatic start of etcd service after system reboot.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl enable etcd
+</code></pre>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
 <p>Execute the following command to check the status of the etcd service.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl status etcd
@@ -167,7 +171,7 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 <p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
 <p>Now, you will configure Patroni  <em>using a YAML file</em>  in the  <em>/etc/patroni/</em> directory  to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub  <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
 <p>Create a directory patroni inside the /etc/ folder using the <code>mkdir</code> command as below.</p>
-<pre class=" language-command"><code class="prism  language-command">mkdir /etc/patroni
+<pre class=" language-command"><code class="prism  language-command">sudo mkdir /etc/patroni
 </code></pre>
 <p>You should navigate to the /etc/patroni/ directory to copy the YAML file to that location.  <code>cd</code>  command can be used to navigate to the specified directory.</p>
 <p>Execute the following command to navigate to the  <em>/etc/patroni/</em>  directory.</p>
@@ -177,7 +181,7 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 <p>Next, you need to copy the raw  <a href="https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml">default YAML</a>  file from GitHub to the /etc/patroni/ directory.</p>
 <p><code>curl</code>  tool is used to copy data from a server to another server.</p>
 <p>Execute the below command to copy the YAML file from GitHub to your server.</p>
-<pre class=" language-command"><code class="prism  language-command">curl -o config.yml https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
+<pre class=" language-command"><code class="prism  language-command">sudo curl -o config.yml https://raw.githubusercontent.com/zalando/patroni/master/postgres0.yml
 </code></pre>
 <p>The -o option in the  <code>curl</code>  command copies the file with the filename specified in the command. Here it creates a file named config.yml.</p>
 <p>Now, you need to update the config.yml  file with the right configuration.</p>
@@ -189,7 +193,7 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 <p>Update the highlighted parameters in the config.yml.</p>
 <pre><code>[label /etc/patroni/config.yml]
 scope: &lt;^&gt;postgres&lt;^&gt;
-&lt;^&gt;namespace: /service/&lt;^&gt;
+&lt;^&gt;namespace: /db/&lt;^&gt;
 name: &lt;^&gt;node1&lt;^&gt;
 
 restapi:
@@ -381,15 +385,20 @@ TimeoutSec=30
 Restart=no
 
 [Install]
-WantedBy=multi-user.targ
+WantedBy=multi-user.target
 </code></pre>
 <p>As highlighted above, you need to update the location of the Patroni configuration file.  You can learn more about the systemd unit and unit file in <a href="https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files">this</a> tutorial.</p>
 <p>Now, you need to start Patroni for handling the postgres database.</p>
-<p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>start</code> with <code>systemctl</code> to start the system service.</p>
+<p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services.</p>
+<p>Use <code>start</code> with <code>systemctl</code> to start the system service.</p>
 <p>Execute the following command to start Patroni.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl start patroni
 </code></pre>
 <p>Now Patroni is running and its handling the postgresql database.</p>
+<p>Use <code>enable</code> with <code>systemctl</code> to enable Patroni service to be started automatically after every system reboot.</p>
+<p>Execute the following command to enable automatic start of Patroni service after system reboot.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl enable patroni
+</code></pre>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
 <p>Execute the following command to check the status of the Patroni service.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl status patroni
@@ -507,6 +516,10 @@ listen postgres
 <p>The  <code>systemctl</code>  command is used to manage the  <em>systemd</em>  services. Use  <code>restart</code>  with  <code>systemctl</code>  to start the system service.</p>
 <p>Execute the following command to restart the HAProxy.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl restart haproxy
+</code></pre>
+<p>Use <code>enable</code> with <code>systemctl</code> to enable HAProxy service to be started automatically after every system reboot.</p>
+<p>Execute the following command to enable automatic start of HAProxy service after system reboot.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo systemctl enable haproxy
 </code></pre>
 <p>Now  <em>HAProxy</em>  is running and its handling the postgresql database instance with High availability.</p>
 <p>Now, you can test the highly available postgresql cluster.</p>
