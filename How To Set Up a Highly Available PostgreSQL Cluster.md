@@ -462,7 +462,8 @@ Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,434 INFO: does not have 
 Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i am a secondary and i am following a leader
 
 </code></pre>
-<p>Postgresql cluster is up and running. Now, you’ll configure HAProxy which can be used to connect to Master Postgresql node.</p>
+<p>Postgresql cluster is up and running.</p>
+<p>Now, you’ll configure HAProxy which can be used to connect to Master Postgresql node.</p>
 <h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
 <p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers…</p>
 <p>You can use HAProxy to connect to the master node in the configured Postgresql cluster. All Postgres clients (your applications, <code>psql</code>, etc.) will connect to HAProxy which will make sure you connect to the master in the configured postgres cluster. You’ve installed it in node-5 in the step4 of the turorial.</p>
@@ -517,6 +518,7 @@ listen postgres
 <p><img src="https://imgur.com/4ZxTY8X" alt="HAproxy dashboard page2"></p>
 <p>When you restart the node-1 or start the Patroni service, then node-1 will join the cluster, sync and follow the leader node-2.</p>
 <p>You now have the highly available postgres up and running.</p>
+<p>Your applications and postgres client can use the public IP address of the node-5 where HAProxy is installed with port 5000 to connect to this highly available cluster.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this article, you have set up a robust and highly available PostgreSQL cluster.</p>
 <p>Now you can improve it further by</p>
