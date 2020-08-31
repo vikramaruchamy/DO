@@ -518,7 +518,7 @@ listen postgres
 <p><img src="https://imgur.com/4ZxTY8X" alt="HAproxy dashboard page2"></p>
 <p>When you restart the node-1 or start the Patroni service, then node-1 will join the cluster, sync and follow the leader node-2.</p>
 <p>You now have the highly available postgres up and running.</p>
-<p>Your applications and postgres client can use the public IP address of the node-5 where HAProxy is installed with port 5000 to connect to this highly available cluster.</p>
+<p>Your applications and postgres client can use the &lt;<sup>&gt;public-IP-address&lt;</sup>&gt; of the node-5 where HAProxy is installed with port 5000 to connect to this highly available cluster.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this article, you have set up a robust and highly available PostgreSQL cluster.</p>
 <p>Now you can improve it further by</p>
