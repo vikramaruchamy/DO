@@ -138,7 +138,7 @@ At least one must be routable to all cluster members. These URLs can contain dom
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl restart etcd
 </code></pre>
 <p>Now etcd is running with the updated configurations.</p>
-<p>Use <code>enable</code> with <code>systemctl</code> to enable etcd service to be started automatically after every system reboot.</p>
+<p>Use <code>enable</code> with <code>systemctl</code> to enable automatic start of etcd service after every system reboot.</p>
 <p>Execute the following command to enable automatic start of etcd service after system reboot.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl enable etcd
 </code></pre>
@@ -395,7 +395,7 @@ WantedBy=multi-user.target
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl start patroni
 </code></pre>
 <p>Now Patroni is running and its handling the postgresql database.</p>
-<p>Use <code>enable</code> with <code>systemctl</code> to enable Patroni service to be started automatically after every system reboot.</p>
+<p>Use <code>enable</code> with <code>systemctl</code> to enable automatic start of Patroni service after every system reboot.</p>
 <p>Execute the following command to enable automatic start of Patroni service after system reboot.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl enable patroni
 </code></pre>
@@ -517,7 +517,7 @@ listen postgres
 <p>Execute the following command to restart the HAProxy.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl restart haproxy
 </code></pre>
-<p>Use <code>enable</code> with <code>systemctl</code> to enable HAProxy service to be started automatically after every system reboot.</p>
+<p>Use <code>enable</code> with <code>systemctl</code> to enable automatic start of HAProxy service after every system reboot.</p>
 <p>Execute the following command to enable automatic start of HAProxy service after system reboot.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl enable haproxy
 </code></pre>
