@@ -2,7 +2,8 @@
 <h1 id="how-to-set-up-a-highly-available-postgresql-cluster-on-ubuntu-using-patroni-and-haproxy">How To Set Up a Highly Available PostgreSQL Cluster on Ubuntu Using Patroni and HAProxy</h1>
 <h3 id="introduction">Introduction</h3>
 <!--TODO Let's provide some more information in this introduction for your reader. For example: What is Patroni? What does high availability mean briefly? What's HAProxy? Let's give the reader a really clear picture of the systems structure that this tutorial is offering.-->
-<p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the high availability.</p>
+<p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">high availability</a>.</p>
+<p>Patroni can provide high availability for PostgreSQl. Patroni is a template for you to create your own customized, high-availability solution using Python.</p>
 <p>In this tutorial, you’ll set up the PostgreSQL with high availability using Patroni and HAProxy.</p>
 <p>When you’re finished, you will have a robust and <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">highly available</a> PostgreSQL cluster ready for production use.</p>
 <h2 id="prerequisites">Prerequisites</h2>
@@ -17,15 +18,9 @@
 <li>
 <p>Ensure Python 3 is available on your three servers where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a>.</p>
 </li>
-</ul>
-<!--TODO This is part of the other installation prerequisites, for the nodes which do not have python or postgres installed, you can tell your reader to update before installing Patroni and HAProxy &#8212; so let's drop this prereq. -->
-<ul>
-<li>To ensure you’re using the latest packages in the servers, update the installed package database in all the servers using the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-update-the-package-database-with-apt-get">Update the installed packages</a> and upgrade the packages to the latest version by using <a href="https://www.digitalocean.com/community/tutorials/how-to-manage-packages-in-ubuntu-and-debian-with-apt-get-apt-cache#how-to-upgrade-installed-packages-with-apt-get">upgrade packages.</a></li>
-</ul>
-<!--TODO Let's drop this prereq. We'll use nano, as per our other tutorials &#8212; if a reader knows how to use Vim they will be able to acces that themselves, otherwise nano is more accessible and installed on Ubuntu by default. -->
-<p>-Install VIM text editors in all your droplets by following the Installation step in the guide <a href="https://www.digitalocean.com/community/tutorials/installing-and-using-the-vim-text-editor-on-a-cloud-server">Installing and using VIM Text editor</a>. Get yourself familiar with the text editor commands. This will make it easier for your to edit the configuration files using the VIM text editor.</p>
-<ul>
-<li>Reserve two servers for installing etcd and HAProxy. We will refer to these servers as <strong>node-4</strong> and <strong>node-5</strong> respectively.</li>
+<li>
+<p>Reserve two servers for installing etcd and HAProxy. We will refer to these servers as <strong>node-4</strong> and <strong>node-5</strong> respectively.</p>
+</li>
 </ul>
 <!--TODO Are we talking about the ufw here as per the first prerequisite? We need to provide instructions for this... the link you've posted here refers to the cloud firewall, which was not specified.&#10;&#10;Can you make this into the first step &#34;Step 1 &#8212; Configuring Your Node Firewalls&#34; or something along those lines?&#10;  -->
 <p>-<a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">Set up the firewall rules</a> for the nodes as below.</p>
@@ -52,8 +47,8 @@
 <p>Execute the following command to stop the PostgreSQL service.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo systemctl stop postgresql
 </code></pre>
-<p><strong>Note:</strong> You should execute this command in all three droplets(node-1, node-2, node-3)where PostgreSQL is installed.</p>
-<p>Now the PostgreSQL service is stopped in all nodes(node-1, node-2, node-3).</p>
+<p><strong>Note:</strong> You should execute this command in all three droplets(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>)where PostgreSQL is installed.</p>
+<p>Now the PostgreSQL service is stopped in all nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>).</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
 <h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
@@ -67,7 +62,7 @@
 <p>Execute the following command to install <strong>Patroni</strong> along with its dependencies <strong>psycopg2-binary</strong> and <strong>python-etcd</strong>.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo pip3 install patroni psycopg2-binary python-etcd
 </code></pre>
-<p><strong>Note:</strong>  You should execute this command in all three droplets(node-1, node-2, node-3) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
+<p><strong>Note:</strong>  You should execute this command in all three droplets(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
 <h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing etcd</h2>
 <p>etcd is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.</p>
@@ -94,7 +89,8 @@ sudo apt-get install haproxy
 <p>During the installation of the etcd, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo vim /etc/default/etcd
+<pre class=" language-command"><code class="prism  language-command">[environment fourth]
+sudo vim /etc/default/etcd
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Now the etcd default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address as give below.</p>
@@ -136,16 +132,19 @@ At least one must be routable to all cluster members. These URLs can contain dom
 <p>Now, you need to restart etcd for the configuration changes to be effective.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>restart</code> with <code>systemctl</code> to restart the system service.</p>
 <p>Execute the following command to restart the etcd service.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo systemctl restart etcd
+<pre class=" language-command"><code class="prism  language-command">[environment fourth]
+sudo systemctl restart etcd
 </code></pre>
 <p>Now etcd is running with the updated configurations.</p>
 <p>Use <code>enable</code> with <code>systemctl</code> to enable automatic start of etcd service after every system reboot.</p>
 <p>Execute the following command to enable automatic start of etcd service after system reboot.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo systemctl enable etcd
+<pre class=" language-command"><code class="prism  language-command">[environment fourth]
+sudo systemctl enable etcd
 </code></pre>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the system service.</p>
 <p>Execute the following command to check the status of the etcd service.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo systemctl status etcd
+<pre class=" language-command"><code class="prism  language-command">[environment fourth]
+sudo systemctl status etcd
 </code></pre>
 <p>You will see the below messages if the etcd configuration is successful.</p>
 <pre><code>[label etcd log]
@@ -170,8 +169,8 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 </code></pre>
 <h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
 <!--TODO Which node should this step be completed on? -->
-<p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2.</p>
-<p>Now, you will configure Patroni  <em>using a YAML file</em>  in the  <em>/etc/patroni/</em> directory  to handle the PostgreSQL service. A default YAML file is available in the offical Patroni GitHub  <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
+<p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2 in <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>.</p>
+<p>Now, you will configure Patroni  <em>using a YAML file</em>  in the  <em>/etc/patroni/</em> directory  to handle the PostgreSQL service in <strong>node-1</strong>. A default YAML file is available in the offical Patroni GitHub  <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
 <p>Create a directory patroni inside the /etc/ folder using the <code>mkdir</code> command as below.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo mkdir /etc/patroni
 </code></pre>
@@ -331,7 +330,7 @@ tags:
 <ul>
 <li>scope - Name for the highly available postgres cluster</li>
 <li>namespace -path within the configuration store where Patroni will keep information about the cluster. Default value: “/service”.</li>
-<li>name - the name of the host. Must be unique for the cluster. for e.g. (node-1 in the first server, node-2 in the second server and so on).</li>
+<li>name - the name of the host. Must be unique for the cluster. for e.g. (<strong>node-1</strong> in the first server, <strong>node-2</strong> in the second server and so on).</li>
 </ul>
 <p>RestAPI section:</p>
 <ul>
@@ -438,13 +437,15 @@ Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,453 INFO: Lock owner: n
 Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,460 INFO: no action.  i am the leader with the lock
 
 </code></pre>
-<p>Configuring Patroni in the first Droplet is complete. You need to follow the same steps in other two droplets(node-2 and node-3) where PostgreSQL is installed. Update the node-2-ip-address and node-3-IP-address wherever applicable.</p>
-<p>One you complete the Patroni configuration in the node-2 and node-3, these nodes will join in the cluster and follow the leader node-1.</p>
-<p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the Patroni in node-2.</p>
+<p>Configuring Patroni in the first Droplet is complete.</p>
+<p>You need to follow the same steps in other two droplets(<strong>node-2</strong> and <strong>node-3</strong>) where PostgreSQL is installed. Update the node-2-ip-address and node-3-IP-address wherever applicable.</p>
+<p>One you complete the Patroni configuration in the <strong>node-2</strong> and <strong>node-3</strong>, these nodes will join in the cluster and follow the leader <strong>node-1</strong>.</p>
+<p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the Patroni in <strong>node-2</strong>.</p>
 <p>Execute the following command to check the status of the Patroni service.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo systemctl status patroni
+<pre class=" language-command"><code class="prism  language-command">[environment second]
+sudo systemctl status patroni
 </code></pre>
-<p>You will see the below messages if the node-2 is joined in the cluster successfully.</p>
+<p>You will see the below messages if the <strong>node-2</strong> is joined in the cluster successfully.</p>
 <pre><code>[label node-2 patroni logs]
 ● patroni.service - High availability PostgreSQL Cluster
      Loaded: loaded (/etc/systemd/system/patroni.service; disabled; vendor preset: enabled)
@@ -478,11 +479,12 @@ Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i 
 <p>Now, you’ll configure HAProxy which can be used to connect to Master Postgresql node.</p>
 <h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
 <p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers…</p>
-<p>You can use HAProxy to connect to the master node in the configured Postgresql cluster. All Postgres clients (your applications, <code>psql</code>, etc.) will connect to HAProxy which will make sure you connect to the master in the configured postgres cluster. You’ve installed it in node-5 in the step4 of the turorial.</p>
+<p>You can use HAProxy to connect to the master node in the configured Postgresql cluster. All Postgres clients (your applications, <code>psql</code>, etc.) will connect to HAProxy which will make sure you connect to the master in the configured postgres cluster. You’ve installed it in <strong>node-5</strong> in the step4 of the turorial.</p>
 <p>During the installation of the HAProxy, a default haproxy.cfg file is created in the location <em>/etc/haproxy/haproxy.cfg</em>.</p>
 <p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo vim /etc/haproxy/haproxy.cfg
+<pre class=" language-command"><code class="prism  language-command">[environment fifth]
+sudo vim /etc/haproxy/haproxy.cfg
 </code></pre>
 <p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
 <p>Update the file with the following content.</p>
@@ -518,11 +520,13 @@ listen postgres
 <p>Now, you need to restart HAProxy for handling the high availability with the updated settings.</p>
 <p>The  <code>systemctl</code>  command is used to manage the  <em>systemd</em>  services. Use  <code>restart</code>  with  <code>systemctl</code>  to start the system service.</p>
 <p>Execute the following command to restart the HAProxy.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo systemctl restart haproxy
+<pre class=" language-command"><code class="prism  language-command">[environment fifth]
+sudo systemctl restart haproxy
 </code></pre>
 <p>Use <code>enable</code> with <code>systemctl</code> to enable automatic start of HAProxy service after every system reboot.</p>
 <p>Execute the following command to enable automatic start of HAProxy service after system reboot.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo systemctl enable haproxy
+<pre class=" language-command"><code class="prism  language-command">[environment fifth]
+sudo systemctl enable haproxy
 </code></pre>
 <p>Now  <em>HAProxy</em>  is running and its handling the postgresql database instance with High availability.</p>
 <p>Now, you can test the highly available postgresql cluster.</p>
@@ -530,11 +534,11 @@ listen postgres
 <p>You can test the highly available cluster using the HAProxy dashboard.</p>
 <p>In your preferred web browser, enter the http://&lt;<sup>&gt;node-5-IP-address&lt;</sup>&gt;:7000 to open the HAProxy dashboard which looks like the below image.</p>
 <p><img src="https://imgur.com/o0KFtlO" alt="HAproxy dashboard page"></p>
-<p>In the postgres section, the green highlighted line denotes the postgres node which is currently acting as the master. Now, shutdown the node-1 or stop the Patroni service in the node-1, you’ll be able to see another node from the cluster becomes the master. Refresh the HAProxy dashboard page and you’ll see the node-2 which has become the master as shown below.</p>
+<p>In the postgres section, the green highlighted line denotes the postgres node which is currently acting as the master. Now, shutdown the <strong>node-1</strong> or stop the Patroni service in the <strong>node-1</strong>, you’ll be able to see another node from the cluster becomes the master. Refresh the HAProxy dashboard page and you’ll see the <strong>node-2</strong> which has become the master as shown below.</p>
 <p><img src="https://imgur.com/4ZxTY8X" alt="HAproxy dashboard page2"></p>
-<p>When you restart the node-1 or start the Patroni service, then node-1 will join the cluster, sync and follow the leader node-2.</p>
+<p>When you restart the <strong>node-1</strong> or start the Patroni service, then <strong>node-1</strong> will join the cluster, sync and follow the leader <strong>node-2</strong>.</p>
 <p>You now have the highly available postgres up and running.</p>
-<p>Your applications and postgres client can use the &lt;<sup>&gt;public-IP-address&lt;</sup>&gt; of the node-5 where HAProxy is installed with port 5000 to connect to this highly available cluster.</p>
+<p>Your applications and postgres client can use the &lt;<sup>&gt;public-IP-address&lt;</sup>&gt; of the <strong>node-5</strong> where HAProxy is installed with port 5000 to connect to this highly available cluster.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this article, you have set up a robust and highly available PostgreSQL cluster.</p>
 <p>Now you can improve it further by</p>
