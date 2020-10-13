@@ -1,9 +1,9 @@
 <!--TODO&#10;&#10;&#10;Hi Vikram,&#10;&#10;I think this will be a great tutorial! Thank you for the work you have put in to date. I'm including some notes for changes to the structure and some of the descriptions through to step 6.&#10;&#10;Could you also work on making it 100% clear which node the reader should be working on at any given point? I'm including some guidelines below. I will continue my technical test once you have completed this review and the changes are in place.&#10;&#10;Look forward to seeing the next draft.&#10;&#10;&#10;&#10;For referring to the nodes:&#10;&#10;1. Names such as node-1, node-2, let's add them in bold **node-1**.&#10;2. Tell the reader before the command which node to run the command on.&#10;3. And to make triple sure we're making the node usage clear to the reader let's use the different environment colors on the commands.&#10;&#10;Perhaps for commands run on multiple nodes, leave as standard command box,&#10;&#10;[environment second]&#10;&#10;[environment third]&#10;&#10;etc.&#10;&#10;You can check these in the markdown previewer: https://www.digitalocean.com/community/markdown&#10;&#10;otherwise, it looks as though we'll only be accessing node-4 and node-5 separately? Step 6, it isn't clear to me which node we should run the commands on.&#10;&#10;&#10;&#10;&#10;&#10;&#10;-->
 <h1 id="how-to-set-up-a-highly-available-postgresql-cluster-on-ubuntu-using-patroni-and-haproxy">How To Set Up a Highly Available PostgreSQL Cluster on Ubuntu Using Patroni and HAProxy</h1>
 <h3 id="introduction">Introduction</h3>
-<!--TODO Let's provide some more information in this introduction for your reader. For example: What is Patroni? What does high availability mean briefly? What's HAProxy? Let's give the reader a really clear picture of the systems structure that this tutorial is offering.-->
 <p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">high availability</a>.</p>
 <p>Patroni can provide high availability for PostgreSQl. Patroni is a template for you to create your own customized, high-availability solution using Python.</p>
+<p>With the high availability solution that has more than one database instances in a single cluster, it will be difficult to maintain the database end points. To solve this, <a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts">HAProxy</a> can be used. It keeps track of changes in the Master/Slave nodes and connects to the appropriate master node when the clients request connection.</p>
 <p>In this tutorial, you’ll set up the PostgreSQL with high availability using Patroni and HAProxy.</p>
 <p>When you’re finished, you will have a robust and <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">highly available</a> PostgreSQL cluster ready for production use.</p>
 <h2 id="prerequisites">Prerequisites</h2>
@@ -15,6 +15,9 @@
 <li>
 <p>Install PostgreSQL on three of your servers by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. Just follow Step 1 of PostgreSQL installation tutorial. Other steps should be ignored. These three servers are referred as <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong> in this tutorial.</p>
 </li>
+</ul>
+<!-- Vikram Q: I hope you have followed only step 1 of this tutorial.  Since we have only one command from the tutorials, shall we add the step directly in our tutorial? -->
+<ul>
 <li>
 <p>Ensure Python 3 is available on your three servers where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a>.</p>
 </li>
@@ -24,24 +27,16 @@
 </ul>
 <!--TODO Are we talking about the ufw here as per the first prerequisite? We need to provide instructions for this... the link you've posted here refers to the cloud firewall, which was not specified.&#10;&#10;Can you make this into the first step &#34;Step 1 &#8212; Configuring Your Node Firewalls&#34; or something along those lines?&#10;  -->
 <p>-<a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">Set up the firewall rules</a> for the nodes as below.</p>
+<h2 id="step-1-—-configuring-your-node-firewalls">Step 1 — Configuring Your Node Firewalls</h2>
+<p>You need to configure <a href="https://www.digitalocean.com/docs/networking/firewalls/#features">firewalls</a> in your droplets to restrict the Incoming and the Outgoing traffic of the firewalls.</p>
+<p>DigitalOcean Cloud Firewalls are a network-based, stateful firewall service for Droplets. You can learn How to create a firewall rules, edit the firewall rules in <a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">this</a> DigitalOcean cloud firewall tutorial.</p>
+<p>Configure the firewall for your nodes as below.</p>
+<p>Create a rule to allow inbound traffic from port 5432.</p>
 <ul>
-<li>
-<p>Port 5432 of node-1, node-2 and node-3 should be accessible by the alternate postgres nodes.</p>
-</li>
-<li>
-<p>Port 5432 of both node-1, node-2 and node-3 should be accessible from node-5.</p>
-</li>
-<li>
-<p>Port 8008 of both node-1, node-2 and node-3 should be accessible from node-5.</p>
-</li>
-<li>
-<p>Port 2379 of node-4 should be accessible from node-1, node-2 and node-3.</p>
-</li>
-<li>
-<p>Port 7000 of  node-5 should be accessible from every IP address.</p>
-</li>
+<li>Apply the firewall to the PostgreSQL nodes. (<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>). This is required for the PostgreSQL nodes to communicate between each other for creating replicas.</li>
 </ul>
-<h2 id="step-1-—-stopping-postgres-service">Step 1 <strong>—</strong> Stopping Postgres Service</h2>
+<!-- Vikram Q: Do you have any preferred method of adding firewalls. Shall we explain creating rules in the cloud firewall or we should explain adding the firewall using the commandline? -->
+<h2 id="step-2-—-stopping-postgres-service">Step 2 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
 <p>Execute the following command to stop the PostgreSQL service.</p>
@@ -50,7 +45,7 @@
 <p><strong>Note:</strong> You should execute this command in all three droplets(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>)where PostgreSQL is installed.</p>
 <p>Now the PostgreSQL service is stopped in all nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>).</p>
 <p>You can install Patroni, so that it takes charge of running PostgreSQL Service as required.</p>
-<h2 id="step-2-—-installing-patroni">Step 2 <strong>—</strong> Installing Patroni</h2>
+<h2 id="step-3-—-installing-patroni">Step 3 <strong>—</strong> Installing Patroni</h2>
 <!-- For more information on steps, see https://do.co/style/#steps -->
 <p>Patroni is a Python package which can be used to manage the PostgreSQL configuration. Patroni is capable of handling Database replication, backup and restoration configurations.</p>
 <p>Patroni uses utilities that come installed with postgres, located in the  <strong>/usr/lib/postgresql/&lt;<sup>&gt;12&lt;</sup>&gt;/bin</strong>  directory by default. You need to create symbolic links in the PATH to ensure that Patroni can find the utilities.</p>
@@ -64,25 +59,25 @@
 </code></pre>
 <p><strong>Note:</strong>  You should execute this command in all three droplets(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>) where PostgreSQL is installed, so that the PostgreSQL configuration can be handled using Patroni.</p>
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
-<h2 id="step-3-—-installing-etcd">Step 3 <strong>—</strong> Installing etcd</h2>
+<h2 id="step-4-—-installing-etcd">Step 4 <strong>—</strong> Installing etcd</h2>
 <p>etcd is a strongly consistent, distributed key-value store that provides a reliable way to store data that needs to be accessed by a distributed system or cluster of machines. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.</p>
 <p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
 <p>Execute the following command to install etcd in the <strong>node-4</strong> reserved for etcd.</p>
 <pre class=" language-command"><code class="prism  language-command">[environment fourth]
-sudo apt-get install etcd
+sudo apt install etcd
 </code></pre>
 <!--TODO We can use &#34;sudo apt install&#34; (drop -get) since ubuntu 18.04 -->
 <p>etcd is installed successfully. Now, you can install HAProxy that provides high availability.</p>
-<h2 id="step-4-—-installing-haproxy">Step 4 <strong>—</strong> Installing HAProxy</h2>
+<h2 id="step-5-—-installing-haproxy">Step 5 <strong>—</strong> Installing HAProxy</h2>
 <p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers. <!--TODO It would be great to see this intro to HAProxy in the introduction of the tutorial. Instead here tell your reader why they're using it here, what they're about to do and how it helps in the high availability structure they're building. (Specifically in terms of the nodes 1&#8211;5). --></p>
-<p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
+<p>The <code>apt install</code> command is used to install packages with all the necessary dependencies.</p>
 <p>Execute the following command to install HAProxy in the <strong>node-5</strong> reserved for HAProxy:</p>
 <pre class=" language-command"><code class="prism  language-command">[environment fifth]
-sudo apt-get install haproxy
+sudo apt install haproxy
 </code></pre>
 <p>HAProxy is installed successfully.</p>
 <p>Now all the installations are complete in the relevant servers and you’ll start the configuration of etcd, Patroni and HAProxy.</p>
-<h2 id="step-5-—-configuring-etcd">Step 5 <strong>—</strong> Configuring etcd</h2>
+<h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring etcd</h2>
 <p>etcd is a fault-tolerant, distributed key-value store <!--TODO We've already said this, perhaps expand on etcd within the context of this tutorial? --> that is used to store the state of the postgres cluster. You’ve installed etcd in the step3.</p>
 <p>Now, you will configure etcd to handle the leader elections in the highly available cluster and store the state of the postgres cluster.</p>
 <p>Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
@@ -167,9 +162,9 @@ Aug 27 14:03:57 do-04 systemd[1]: Started etcd - highly-available key value stor
 Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
 Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less than 1s
 </code></pre>
-<h2 id="step-6-—-configuring-patroni">Step 6 <strong>—</strong> Configuring Patroni</h2>
+<h2 id="step-7-—-configuring-patroni">Step 7 <strong>—</strong> Configuring Patroni</h2>
 <!--TODO Which node should this step be completed on? -->
-<p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 2 in <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>.</p>
+<p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 3 in <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>.</p>
 <p>Now, you will configure Patroni  <em>using a YAML file</em>  in the  <em>/etc/patroni/</em> directory  to handle the PostgreSQL service in <strong>node-1</strong>. A default YAML file is available in the offical Patroni GitHub  <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
 <p>Create a directory patroni inside the /etc/ folder using the <code>mkdir</code> command as below.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo mkdir /etc/patroni
@@ -477,7 +472,7 @@ Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i 
 </code></pre>
 <p>Postgresql cluster is up and running.</p>
 <p>Now, you’ll configure HAProxy which can be used to connect to Master Postgresql node.</p>
-<h2 id="step-7-—-configuring-haproxy">Step 7 <strong>—</strong> Configuring HAProxy</h2>
+<h2 id="step-8-—-configuring-haproxy">Step 8 <strong>—</strong> Configuring HAProxy</h2>
 <p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers…</p>
 <p>You can use HAProxy to connect to the master node in the configured Postgresql cluster. All Postgres clients (your applications, <code>psql</code>, etc.) will connect to HAProxy which will make sure you connect to the master in the configured postgres cluster. You’ve installed it in <strong>node-5</strong> in the step4 of the turorial.</p>
 <p>During the installation of the HAProxy, a default haproxy.cfg file is created in the location <em>/etc/haproxy/haproxy.cfg</em>.</p>
@@ -530,7 +525,7 @@ sudo systemctl enable haproxy
 </code></pre>
 <p>Now  <em>HAProxy</em>  is running and its handling the postgresql database instance with High availability.</p>
 <p>Now, you can test the highly available postgresql cluster.</p>
-<h2 id="step-8-—-testing-the-setup">Step 8 <strong>—</strong> Testing the Setup</h2>
+<h2 id="step-9-—-testing-the-setup">Step 9 <strong>—</strong> Testing the Setup</h2>
 <p>You can test the highly available cluster using the HAProxy dashboard.</p>
 <p>In your preferred web browser, enter the http://&lt;<sup>&gt;node-5-IP-address&lt;</sup>&gt;:7000 to open the HAProxy dashboard which looks like the below image.</p>
 <p><img src="https://imgur.com/o0KFtlO" alt="HAproxy dashboard page"></p>
