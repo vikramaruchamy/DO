@@ -1,6 +1,8 @@
 <!--TODO&#10;&#10;&#10;Hi Vikram,&#10;&#10;I think this will be a great tutorial! Thank you for the work you have put in to date. I'm including some notes for changes to the structure and some of the descriptions through to step 6.&#10;&#10;Could you also work on making it 100% clear which node the reader should be working on at any given point? I'm including some guidelines below. I will continue my technical test once you have completed this review and the changes are in place.&#10;&#10;Look forward to seeing the next draft.&#10;&#10;&#10;&#10;For referring to the nodes:&#10;&#10;1. Names such as node-1, node-2, let's add them in bold **node-1**.&#10;2. Tell the reader before the command which node to run the command on.&#10;3. And to make triple sure we're making the node usage clear to the reader let's use the different environment colors on the commands.&#10;&#10;Perhaps for commands run on multiple nodes, leave as standard command box,&#10;&#10;[environment second]&#10;&#10;[environment third]&#10;&#10;etc.&#10;&#10;You can check these in the markdown previewer: https://www.digitalocean.com/community/markdown&#10;&#10;otherwise, it looks as though we'll only be accessing node-4 and node-5 separately? Step 6, it isn't clear to me which node we should run the commands on.&#10;&#10;&#10;&#10;&#10;&#10;&#10;-->
 <h1 id="how-to-set-up-a-highly-available-postgresql-cluster-on-ubuntu-using-patroni-and-haproxy">How To Set Up a Highly Available PostgreSQL Cluster on Ubuntu Using Patroni and HAProxy</h1>
 <h3 id="introduction">Introduction</h3>
+<!--Introductory paragraph about the topic that explains what this topic is about and why the reader should care; what problem does it solve?-->
+<!--Introductory paragraph about the topic that explains what this topic is about and why the reader should care; what problem does it solve?-->
 <p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">high availability</a>.</p>
 <p>Patroni can provide high availability for PostgreSQl. Patroni is a template for you to create your own customized, high-availability solution using Python.</p>
 <p>With the high availability solution that has more than one database instances in a single cluster, it will be difficult to maintain the database end points. To solve this, <a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-haproxy-and-load-balancing-concepts">HAProxy</a> can be used. It keeps track of changes in the Master/Slave nodes and connects to the appropriate master node when the clients request connection.</p>
@@ -16,7 +18,7 @@
 <p>Install PostgreSQL on three of your servers by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. Just follow Step 1 of PostgreSQL installation tutorial. Other steps should be ignored. These three servers are referred as <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong> in this tutorial.</p>
 </li>
 </ul>
-<!-- Vikram Q: I hope you have followed only step 1 of this tutorial.  Since we have only one command from the tutorials, shall we add the step directly in our tutorial? -->
+<!-- Vikram Q: I hope you have followed all the steps in this tutorial rather following only the first step. That's why you are facing the invalid user issue in the later point of this tutorial. &#10;&#10;Since we have only one command from the tutorials, shall we add the step directly in our tutorial? -->
 <ul>
 <li>
 <p>Ensure Python 3 is available on your three servers where PostgreSQL is installed by following the guide <a href="https://www.digitalocean.com/community/tutorials/how-to-install-python-3-and-set-up-a-programming-environment-on-an-ubuntu-20-04-server">Install Python 3 and Set Up a Programming Environment on an Ubuntu 20.04 Server</a>.</p>
@@ -31,11 +33,12 @@
 <p>You need to configure <a href="https://www.digitalocean.com/docs/networking/firewalls/#features">firewalls</a> in your droplets to restrict the Incoming and the Outgoing traffic of the firewalls.</p>
 <p>DigitalOcean Cloud Firewalls are a network-based, stateful firewall service for Droplets. You can learn How to create a firewall rules, edit the firewall rules in <a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">this</a> DigitalOcean cloud firewall tutorial.</p>
 <p>Configure the firewall for your nodes as below.</p>
-<p>Create a rule to allow inbound traffic from port 5432.</p>
-<ul>
-<li>Apply the firewall to the PostgreSQL nodes. (<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>). This is required for the PostgreSQL nodes to communicate between each other for creating replicas.</li>
-</ul>
-<!-- Vikram Q: Do you have any preferred method of adding firewalls. Shall we explain creating rules in the cloud firewall or we should explain adding the firewall using the commandline? -->
+<h3 id="configuring-ports-for-postgresql">Configuring ports for Postgresql</h3>
+<p>Create a rule to allow inbound traffic from port 8008. Port 8008 is used by the Patroni’s REST API to provide the health checks and cluster messaging between the participating nodes.</p>
+<p>Create a rule to allow inboud traffic from port 5432. Port 5432 is a port where Postgresql listens to for the database transactions and and Data Replication.</p>
+<p>Apply the firewall to the PostgreSQL nodes. (<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>, <strong>node-5</strong>). This is required for the PostgreSQL nodes to communicate between each other for creating replicas.</p>
+<p><img src="https://imgur.com/UFBfpvA" alt="Postgresql firewall"></p>
+<!-- Vikram Q: Do you have any preferred method of adding firewalls. Shall we explain creating rules in the cloud firewall or we should explain adding the firewall using the command line ? e.g.: https://www.digitalocean.com/community/tutorials/how-to-secure-web-server-infrastructure-with-digitalocean-cloud-firewalls-using-doctl -->
 <h2 id="step-2-—-stopping-postgres-service">Step 2 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
