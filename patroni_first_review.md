@@ -30,14 +30,37 @@
 <!--TODO Are we talking about the ufw here as per the first prerequisite? We need to provide instructions for this... the link you've posted here refers to the cloud firewall, which was not specified.&#10;&#10;Can you make this into the first step &#34;Step 1 &#8212; Configuring Your Node Firewalls&#34; or something along those lines?&#10;  -->
 <p>-<a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">Set up the firewall rules</a> for the nodes as below.</p>
 <h2 id="step-1-—-configuring-your-node-firewalls">Step 1 — Configuring Your Node Firewalls</h2>
-<p>You need to configure <a href="https://www.digitalocean.com/docs/networking/firewalls/#features">firewalls</a> in your droplets to restrict the Incoming and the Outgoing traffic of the firewalls.</p>
-<p>DigitalOcean Cloud Firewalls are a network-based, stateful firewall service for Droplets. You can learn How to create a firewall rules, edit the firewall rules in <a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">this</a> DigitalOcean cloud firewall tutorial.</p>
-<p>Configure the firewall for your nodes as below.</p>
+<p>You need to configure <a href="https://www.digitalocean.com/docs/networking/firewalls/#features">firewalls</a> in your droplets to restrict the Incoming and the Outgoing traffic to the droplets.</p>
+<p>DigitalOcean Cloud Firewalls are a network-based, stateful firewall service for Droplets. You can learn How to create a firewall rules, edit the firewall rules in <a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">this DigitalOcean cloud firewall tutorial</a>.</p>
+<p>Now, let’s see how to configure the firewall in the nodes.</p>
 <h3 id="configuring-ports-for-postgresql">Configuring ports for Postgresql</h3>
-<p>Create a rule to allow inbound traffic from port 8008. Port 8008 is used by the Patroni’s REST API to provide the health checks and cluster messaging between the participating nodes.</p>
-<p>Create a rule to allow inboud traffic from port 5432. Port 5432 is a port where Postgresql listens to for the database transactions and and Data Replication.</p>
-<p>Apply the firewall to the PostgreSQL nodes. (<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>, <strong>node-5</strong>). This is required for the PostgreSQL nodes to communicate between each other for creating replicas.</p>
+<p>Create a rule to allow inbound traffic from the nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>,<strong>node-5</strong> ) via port <code>8008</code>.</p>
+<ul>
+<li>Port <code>8008</code> is used by the Patroni’s REST API to provide the health checks and cluster messaging between the participating nodes.</li>
+</ul>
+<p>Create a rule to allow inbound traffic from the nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>, <strong>node-5</strong> ) via port <code>5432</code>.</p>
+<ul>
+<li>Port <code>5432</code> is a port where Postgresql listens to for the database transactions and and Data Replication.</li>
+</ul>
+<p>Apply the firewall to the PostgreSQL nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>).</p>
+<ul>
+<li>This allows PostgreSQL nodes to communicate between each other for creating replicas.</li>
+</ul>
+<p>Apply the firewall to the HAProxy node(<strong>node-5</strong>).</p>
+<ul>
+<li>This allows HAProxy node to communicate with the active Master postgresql node in the cluster.</li>
+</ul>
+<p>The below image shows the complete firewall set up for the postgresql.</p>
 <p><img src="https://imgur.com/UFBfpvA" alt="Postgresql firewall"></p>
+<h3 id="configuring-ports-for-etcd">Configuring ports for ETCD</h3>
+<p>Create a rule to allow inbound traffic from  the nodes (<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>) via port <code>2379</code>.</p>
+<ul>
+<li>Port <code>2379</code> is used by ETCD for the client requests. This port is used by clients to read and write information from ETCD. For e.g. Database connection details, current leader node information, node status etc.</li>
+</ul>
+<p>Apply the firewall to the ETCD node(<strong>node-4</strong>).</p>
+<ul>
+<li>This allows ETCD node to communicate with the Postgres client node in the cluster.</li>
+</ul>
 <!-- Vikram Q: Do you have any preferred method of adding firewalls. Shall we explain creating rules in the cloud firewall or we should explain adding the firewall using the command line ? e.g.: https://www.digitalocean.com/community/tutorials/how-to-secure-web-server-infrastructure-with-digitalocean-cloud-firewalls-using-doctl -->
 <h2 id="step-2-—-stopping-postgres-service">Step 2 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
