@@ -12,7 +12,7 @@
 <p>Before you begin this guide, you’ll need the following:</p>
 <ul>
 <li>
-<p>Five Ubuntu 20.04 serverset up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall. <!--TODO Does the memory matter on the Droplet? --></p>
+<p>Five Ubuntu 20.04 serverset up by following <a href="https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04">the Ubuntu 20.04 initial server setup guide</a>, including a non-root <code>sudo</code>-enabled user and a firewall. Initially diskspace available in the droplet would be sufficient. If required, additional volumes can be added.</p>
 </li>
 <li>
 <p>Install PostgreSQL on three of your servers by following <a href="https://www.digitalocean.com/community/tutorials/how-to-install-postgresql-on-ubuntu-20-04-quickstart">the Install PostgreSQL on Ubuntu 20.04</a>. Just follow Step 1 of PostgreSQL installation tutorial. Other steps should be ignored. These three servers are referred as <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong> in this tutorial.</p>
@@ -27,8 +27,6 @@
 <p>Reserve two servers for installing etcd and HAProxy. We will refer to these servers as <strong>node-4</strong> and <strong>node-5</strong> respectively.</p>
 </li>
 </ul>
-<!--TODO Are we talking about the ufw here as per the first prerequisite? We need to provide instructions for this... the link you've posted here refers to the cloud firewall, which was not specified.&#10;&#10;Can you make this into the first step &#34;Step 1 &#8212; Configuring Your Node Firewalls&#34; or something along those lines?&#10;  -->
-<p>-<a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">Set up the firewall rules</a> for the nodes as below.</p>
 <h2 id="step-1-—-configuring-your-node-firewalls">Step 1 — Configuring Your Node Firewalls</h2>
 <p>You need to configure <a href="https://www.digitalocean.com/docs/networking/firewalls/#features">firewalls</a> in your droplets to restrict the Incoming and the Outgoing traffic to the droplets.</p>
 <p>DigitalOcean Cloud Firewalls are a network-based, stateful firewall service for Droplets. You can learn How to create a firewall rules, edit the firewall rules in <a href="https://www.digitalocean.com/docs/networking/firewalls/how-to/configure-rules/">this DigitalOcean cloud firewall tutorial</a>.</p>
@@ -36,11 +34,11 @@
 <h3 id="configuring-ports-for-postgresql">Configuring ports for Postgresql</h3>
 <p>Create a rule to allow inbound traffic from the nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>,<strong>node-5</strong> ) via port <code>8008</code>.</p>
 <ul>
-<li>Port <code>8008</code> is used by the Patroni’s REST API to provide the health checks and cluster messaging between the participating nodes.</li>
+<li>Patroni’s REST API uses port <code>8008</code> to provide the health checks and cluster messaging between the participating nodes.</li>
 </ul>
 <p>Create a rule to allow inbound traffic from the nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>, <strong>node-5</strong> ) via port <code>5432</code>.</p>
 <ul>
-<li>Port <code>5432</code> is a port where Postgresql listens to for the database transactions and and Data Replication.</li>
+<li>Postgresql listens to port <code>5432</code> for the database transactions and and Data Replication.</li>
 </ul>
 <p>Apply the firewall to the PostgreSQL nodes(<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>).</p>
 <ul>
@@ -55,13 +53,26 @@
 <h3 id="configuring-ports-for-etcd">Configuring ports for ETCD</h3>
 <p>Create a rule to allow inbound traffic from  the nodes (<strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>) via port <code>2379</code>.</p>
 <ul>
-<li>Port <code>2379</code> is used by ETCD for the client requests. This port is used by clients to read and write information from ETCD. For e.g. Database connection details, current leader node information, node status etc.</li>
+<li>ETCD uses the port <code>2379</code> for the client requests. Clients communicate with ETCD using this port to read and write information from ETCD. For e.g. Database connection details, current leader node information, node status etc.</li>
 </ul>
 <p>Apply the firewall to the ETCD node(<strong>node-4</strong>).</p>
 <ul>
 <li>This allows ETCD node to communicate with the Postgres client node in the cluster.</li>
 </ul>
-<!-- Vikram Q: Do you have any preferred method of adding firewalls. Shall we explain creating rules in the cloud firewall or we should explain adding the firewall using the command line ? e.g.: https://www.digitalocean.com/community/tutorials/how-to-secure-web-server-infrastructure-with-digitalocean-cloud-firewalls-using-doctl -->
+<p>The below image shows the complete firewall set up for the ETCD.</p>
+<p><img src="https://imgur.com/5yWGPTC" alt="ETCD firewall"></p>
+<h3 id="configuring-ports-for-haproxy">Configuring ports for HAProxy</h3>
+<p>Create a rule to allow inbound traffic from All IPV4 and IPV6 address via port <code>7000</code>.</p>
+<ul>
+<li>HAproxy uses the port 7000 to serve the client requests for the database transactions. If you already know your client IP Address, then you can use only that IP address in the source. This will ensure only the traffic from your client is served by HAProxy and other requests are dropped.</li>
+</ul>
+<p>Apply the firewall to the HAProxy node(<strong>node-5</strong>).</p>
+<ul>
+<li>This allows HAproxy node to serve the requests for the database transaction.</li>
+</ul>
+<p>The below image shows the complete firewall set up for HAProxy.</p>
+<p><img src="https://imgur.com/tAwZe70" alt="Postgresql firewall"></p>
+<p>The firewall configuration is complete for the Highly available postresql cluster. You now more on and start setting up the cluster.</p>
 <h2 id="step-2-—-stopping-postgres-service">Step 2 <strong>—</strong> Stopping Postgres Service</h2>
 <p>When PostgreSQL in installed, it automatically starts as a system service. You should stop this PostgreSQL service so that Patroni can take care of running the PostgreSQL Service.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services. Use <code>stop</code> with <code>systemctl</code> to stop the system service.</p>
@@ -92,10 +103,9 @@
 <pre class=" language-command"><code class="prism  language-command">[environment fourth]
 sudo apt install etcd
 </code></pre>
-<!--TODO We can use &#34;sudo apt install&#34; (drop -get) since ubuntu 18.04 -->
 <p>etcd is installed successfully. Now, you can install HAProxy that provides high availability.</p>
 <h2 id="step-5-—-installing-haproxy">Step 5 <strong>—</strong> Installing HAProxy</h2>
-<p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers. <!--TODO It would be great to see this intro to HAProxy in the introduction of the tutorial. Instead here tell your reader why they're using it here, what they're about to do and how it helps in the high availability structure they're building. (Specifically in terms of the nodes 1&#8211;5). --></p>
+<p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers.</p>
 <p>The <code>apt install</code> command is used to install packages with all the necessary dependencies.</p>
 <p>Execute the following command to install HAProxy in the <strong>node-5</strong> reserved for HAProxy:</p>
 <pre class=" language-command"><code class="prism  language-command">[environment fifth]
@@ -104,16 +114,17 @@ sudo apt install haproxy
 <p>HAProxy is installed successfully.</p>
 <p>Now all the installations are complete in the relevant servers and you’ll start the configuration of etcd, Patroni and HAProxy.</p>
 <h2 id="step-6-—-configuring-etcd">Step 6 <strong>—</strong> Configuring etcd</h2>
-<p>etcd is a fault-tolerant, distributed key-value store <!--TODO We've already said this, perhaps expand on etcd within the context of this tutorial? --> that is used to store the state of the postgres cluster. You’ve installed etcd in the step3.</p>
+<p>etcd is a fault-tolerant, distributed key-value store that is used to store the state of the postgres cluster. It gracefully handles leader elections in the cluster and can tolerate machine failure, even in the leader node.</p>
+<p>You’ve installed etcd in the step3.</p>
 <p>Now, you will configure etcd to handle the leader elections in the highly available cluster and store the state of the postgres cluster.</p>
 <p>Using Patroni, all of the postgres nodes makes use of etcd to keep the postgres cluster up and running.</p>
 <p>During the installation of the etcd, a default etcd configuration file is created in the location <em>/etc/default/etcd</em>.</p>
-<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
+<p><code>nano</code> tool is used edit the file. Use  <code>sudo nano</code> to open the file in the edit mode. If you do not use <code>sudo</code>, nano will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
 <pre class=" language-command"><code class="prism  language-command">[environment fourth]
-sudo vim /etc/default/etcd
+sudo nano /etc/default/etcd
 </code></pre>
-<p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
+<p>nano opens the file.</p>
 <p>Now the etcd default configuration file is opened where all the parameters are commented. Look for the each of the below parameters, uncomment it and update the settings with the relevant etcd droplet IP address as give below.</p>
 <pre><code>[label /etc/default/etcd]
 ETCD_LISTEN_PEER_URLS="http://&lt;^&gt;node-4-server-ip&lt;^&gt;:2380"
@@ -124,7 +135,7 @@ ETCD_ADVERTISE_CLIENT_URLS="http://&lt;^&gt;node-4-server-ip&lt;^&gt;:2379"
 ETCD_INITIAL_CLUSTER_TOKEN="etcd-cluster"
 ETCD_INITIAL_CLUSTER_STATE="new"
 </code></pre>
-<p>Press <code>:wq</code> to save the changes to the file and exit the VIM editor.</p>
+<p>Save the changes to the file and exit the nano editor.</p>
 <p>You can learn more about etcd configuration parameters in the <a href="https://etcd.io/docs/v3.4.0/op-guide/configuration/">official etcd page</a>. Here’s what each line in this file is for:</p>
 <ul>
 <li>
@@ -189,8 +200,7 @@ Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
 Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less than 1s
 </code></pre>
 <h2 id="step-7-—-configuring-patroni">Step 7 <strong>—</strong> Configuring Patroni</h2>
-<!--TODO Which node should this step be completed on? -->
-<p>Patroni is a Python package used to handle PostgreSQL configuration. You’ve already installed Patroni in the Step 3 in <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>.</p>
+<p>Patroni is a Python package used to handle PostgreSQL configuration in the high availability clusters. You’ve already installed Patroni in the Step 3 in <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>.</p>
 <p>Now, you will configure Patroni  <em>using a YAML file</em>  in the  <em>/etc/patroni/</em> directory  to handle the PostgreSQL service in <strong>node-1</strong>. A default YAML file is available in the offical Patroni GitHub  <a href="https://github.com/zalando/patroni/blob/master/postgres0.yml">URL</a>.</p>
 <p>Create a directory patroni inside the /etc/ folder using the <code>mkdir</code> command as below.</p>
 <pre class=" language-command"><code class="prism  language-command">sudo mkdir /etc/patroni
@@ -207,11 +217,11 @@ Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less 
 </code></pre>
 <p>The -o option in the  <code>curl</code>  command copies the file with the filename specified in the command. Here it creates a file named config.yml.</p>
 <p>Now, you need to update the config.yml  file with the right configuration.</p>
-<p><code>vim</code>  tool is used edit the file. Use  <code>sudo vim</code>  to open the file in the edit mode. If you do not use  <code>sudo</code>, vim will open the file in the read only mode.</p>
+<p><code>nano</code>  tool is used edit the file. Use  <code>sudo nano</code>  to open the file in the edit mode. If you do not use  <code>sudo</code>, nano will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo vim config.yml
+<pre class=" language-command"><code class="prism  language-command">sudo nano config.yml
 </code></pre>
-<p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
+<p>nano opens the file.</p>
 <p>Update the highlighted parameters in the config.yml.</p>
 <pre><code>[label /etc/patroni/config.yml]
 scope: &lt;^&gt;postgres&lt;^&gt;
@@ -372,10 +382,12 @@ You will add the lines of the three nodes which can be used for authentication d
 <li>listen - IP address + port that Postgres listens to. It must be accessible from other nodes in the cluster.</li>
 <li>connect_address - IP address + port through which Postgres is accessible from other nodes and applications.</li>
 <li>data_dir - The location of the Postgres data directory, either <a href="https://patroni.readthedocs.io/en/latest/existing_data.html#existing-data">existing</a> or to be initialized by Patroni.</li>
-<li>authentication - Authentication section has the username and passwords specified for the superuser, replication user. Superuser is used by Patroni to connect to the postgres and replication user is used by replicas to access master via streaming replication. You can specify the passwords for the superuser and replication user in the password properties of the users respectively.</li>
+<li>authentication - Authentication section has the username and passwords specified for the superuser, replication user.<br>
+SuperUser is a user which has no access restrictions in the Postgresql database. Superuser is used by Patroni to connect to the postgresql database.<br>
+Replication user is a user which has permissions to perform the replication between the master and slave nodes and used by replicas to access master via streaming replication.<br>
+You can specify the passwords for the superuser and replication user in the password properties of the users respectively.</li>
 </ul>
-<!-- TODO Could you make it a little clearer here which user the reader should be adding in here? Is this the server's root user? This following sentence I couldn't follow: &#34;Superuser is used by Patroni to connect to the postgres and replication user is used by replicas to access master via streaming replication.&#34; Could you take a look and rework? I had to stop the technical test since the `chown` command to the postgres user didn't work &#8211; invalid user. (below) -->
-<p>Now, press  <code>:w</code>  to save the changes to the file and exit the VIM editor.</p>
+<p>Now, save the changes to the file and exit the nano editor.</p>
 <p>Next, you need to configure the data directory.</p>
 <p>In the Patroni configuration file, data directory is specified as <em>/data/patroni</em>. The superuser(<em>postgres</em>) mentioned in the configuration file, should be able to write into the data directory.</p>
 <p>Create a directory patroni inside the /data/ folder using the <code>mkdir</code> command as below.</p>
@@ -388,10 +400,10 @@ You will add the lines of the three nodes which can be used for authentication d
 <pre class=" language-command"><code class="prism  language-command">sudo chmod 700 /data/patroni
 </code></pre>
 <p>Next, you need to create a systemd script that will allow us to start, stop and monitor Patroni.</p>
-<p>You need to create a file <em>/etc/systemd/system/patroni.service</em> using the vim command.</p>
-<pre class=" language-command"><code class="prism  language-command">sudo vim /etc/systemd/system/patroni.service
+<p>You need to create a file <em>/etc/systemd/system/patroni.service</em> using the nano command.</p>
+<pre class=" language-command"><code class="prism  language-command">sudo nano /etc/systemd/system/patroni.service
 </code></pre>
-<p>Vim opens the file, press  <code>i</code>  to enter to the insert mode in VIM editor.</p>
+<p>nano opens the file.</p>
 <p>Update the file with the below contents.</p>
 <pre><code>[label /etc/systemd/system/patroni.service]
 [Unit]
@@ -411,6 +423,7 @@ Restart=no
 WantedBy=multi-user.target
 </code></pre>
 <p>As highlighted above, you need to update the location of the Patroni configuration file.  You can learn more about the systemd unit and unit file in <a href="https://www.digitalocean.com/community/tutorials/understanding-systemd-units-and-unit-files">this</a> tutorial.</p>
+<p>Save the changes to the file and exit the nano editor.</p>
 <p>Now, you need to start Patroni for handling the postgres database.</p>
 <p>The <code>systemctl</code> command is used to manage the <em>systemd</em> services.</p>
 <p>Use <code>start</code> with <code>systemctl</code> to start the system service.</p>
@@ -459,8 +472,13 @@ Aug 29 04:20:21 do-01 patroni[3045]: 2020-08-29 04:20:21,460 INFO: no action.  i
 
 </code></pre>
 <p>Configuring Patroni in the first Droplet is complete.</p>
-<p>You need to follow the same steps in other two droplets(<strong>node-2</strong> and <strong>node-3</strong>) where PostgreSQL is installed. Update the node-2-ip-address and node-3-IP-address wherever applicable.</p>
-<p>One you complete the Patroni configuration in the <strong>node-2</strong> and <strong>node-3</strong>, these nodes will join in the cluster and follow the leader <strong>node-1</strong>.</p>
+<p>You need to follow the same steps in other two droplets(<strong>node-2</strong> and <strong>node-3</strong>) where PostgreSQL is installed.</p>
+<p>The specific sections to be updated are</p>
+<ul>
+<li>Node name</li>
+<li>IP Address of the respective node in the <strong>restapi</strong> section and the <strong>PostgreSQL</strong> section.</li>
+</ul>
+<p>Once you complete the Patroni configuration in the <strong>node-2</strong> and <strong>node-3</strong>, these nodes will join in the cluster and follow the leader <strong>node-1</strong>.</p>
 <p>You can use <code>status</code> with the <code>systemctl</code> to check the status of the Patroni in <strong>node-2</strong>.</p>
 <p>Execute the following command to check the status of the Patroni service.</p>
 <pre class=" language-command"><code class="prism  language-command">[environment second]
@@ -502,12 +520,12 @@ Aug 29 04:23:41 do-02 patroni[983]: 2020-08-29 04:23:41,439 INFO: no action.  i 
 <p>HAProxy is free, open source software that provides a high availability load balancer and proxy server for TCP and HTTP-based applications that spreads requests across multiple servers…</p>
 <p>You can use HAProxy to connect to the master node in the configured Postgresql cluster. All Postgres clients (your applications, <code>psql</code>, etc.) will connect to HAProxy which will make sure you connect to the master in the configured postgres cluster. You’ve installed it in <strong>node-5</strong> in the step4 of the turorial.</p>
 <p>During the installation of the HAProxy, a default haproxy.cfg file is created in the location <em>/etc/haproxy/haproxy.cfg</em>.</p>
-<p><code>vim</code> tool is used edit the file. Use  <code>sudo vim</code> to open the file in the edit mode. If you do not use <code>sudo</code>, vim will open the file in the read only mode.</p>
+<p><code>nano</code> tool is used edit the file. Use  <code>sudo nano</code> to open the file in the edit mode. If you do not use <code>sudo</code>, nano will open the file in the read only mode.</p>
 <p>Execute the below command to open and update the configuration file.</p>
 <pre class=" language-command"><code class="prism  language-command">[environment fifth]
-sudo vim /etc/haproxy/haproxy.cfg
+sudo nano /etc/haproxy/haproxy.cfg
 </code></pre>
-<p>Vim opens the file, press <code>i</code> to enter to the insert mode in VIM editor.</p>
+<p>nano opens the file.</p>
 <p>Update the file with the following content.</p>
 <pre><code>[label /etc/haproxy/haproxy.cfg]
 global
@@ -538,6 +556,7 @@ listen postgres
     server postgresql_&lt;^&gt;node-3-server-ip&lt;^&gt;_5432 &lt;^&gt;node-3-server-ip&lt;^&gt;:5432 maxconn 100 check port 8008
 </code></pre>
 <p>In the listen postgres section, you’ll update the details of the Postgres servers IPs which is used by HAProxy to connect to Postgres master server. You can learn more about HAProxy configuration parameters in the <a href="http://cbonte.github.io/haproxy-dconv/2.2/configuration.html#2.5">official HAProxy docs page</a>.</p>
+<p>Save the changes to the file and exit the nano editor.</p>
 <p>Now, you need to restart HAProxy for handling the high availability with the updated settings.</p>
 <p>The  <code>systemctl</code>  command is used to manage the  <em>systemd</em>  services. Use  <code>restart</code>  with  <code>systemctl</code>  to start the system service.</p>
 <p>Execute the following command to restart the HAProxy.</p>
