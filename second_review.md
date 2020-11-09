@@ -3,7 +3,7 @@
 <!--NOTE As a note, once we have the technical test complete and successful we'll need to adjust the master/slave terminology you're using here. -->
 <p>PostgreSQL is an opensource relational database that can run on major operating systems. It is highly robust and versatile, but doesn’t have features for the <a href="https://www.digitalocean.com/community/tutorials/what-is-high-availability">high availability</a>. There are other open source frameworks available which can be used to manage high availability of the PostgreSQL Database.</p>
 <p>In this tutorial, you’ll set up the PostgreSQL with high availability using Patroni, ETCD and HAProxy.</p>
-<!--TODO I would love to see this introduction shaped to also include etcd &#8212; right now, the parts of the cluster are discussed quite separately apart from one sentence. How do all these parts come together in one architecture? Can you describe that in a paragraph to your reader? This might entail moving around the sentences you already have. -->
+<!--TODO I would love to see this introduction shaped to also include etcd &#8212; right now, the parts of the cluster are discussed quite separately apart from one sentence. How do all these parts come together in one architecture? Can you describe that in a paragraph to your reader? This might entail moving around the sentences you already have. &#10;&#10;Vikram Answer: Complete picture of the Patroni, ETCD and Haproxy is given. Let me know if you still need updates. &#10;-->
 <p>Patroni is a template for you to create your own customized, high-availability solution developed using Python.  It is also capable of handling Database replication, backup and restoration configurations.</p>
 <p>ETCD is a fault-tolerant, distributed key-value store that is used to store the state of the PostgreSQL cluster. It gracefully handles leader elections during network partitions and can tolerate machine failure, even in the leader node.</p>
 <p>Whenever there is a change in the state of any PostgreSQL node in the cluster, Patroni updates the state change in the ETCD key-value store. With this information, ETCD elects the master node and keeps the cluster UP and running.</p>
@@ -110,7 +110,7 @@
 <p>Now, you can install the etcd to handle the distributed cluster.</p>
 <h2 id="step-4-—-installing-etcd">Step 4 <strong>—</strong> Installing etcd</h2>
 <!--TODO The reader needs to update here first before installing, otherwise the package won't be available. November 2) Can you ensure to add this in?-->
-<!--Vikram Answer: We have already update the packages in the Step-1 of  Python Prerequisites. I hope it should be fine. Intro for this step is provided accordingly.-->
+<!--Vikram Answer: We have already updated the packages in the Step-1 of  Python Prerequisites. I hope it should be fine. Intro for this step is provided accordingly.-->
 <p>In this step, you will install ETCD using the <code>apt-get install</code> command.</p>
 <p>The <code>apt-get install</code> command is used to install packages with all the necessary dependencies.</p>
 <p>Execute the following command to install etcd in the <strong>node-4</strong> reserved for etcd.</p>
@@ -214,7 +214,7 @@ Aug 27 14:03:57 do-04 systemd[1]: Started etcd - highly-available key value stor
 Aug 27 14:03:57 do-04 etcd[14786]: ready to serve client requests
 Aug 27 16:59:14 do-04 etcd[14786]: sync duration of 1.165829808s, expected less than 1s
 </code></pre>
-<!--TODO Can you write a transitional sentence here to tell your reader what they've set up and what they're about to move on to? &#10;&#10;Vikram Answer: Transistion Added-->
+<!--TODO Can you write a transitional sentence here to tell your reader what they've set up and what they're about to move on to? &#10;&#10;Vikram Answer: Transition Added-->
 <p>You’ve configured ETCD to maintain the state of the PostgreSQL nodes. Next, you’ll configure Patroni which can update the state of the PostgreSQL nodes to the ETCD key-value store.</p>
 <h2 id="step-7-—-configuring-patroni">Step 7 <strong>—</strong> Configuring Patroni</h2>
 <p>Patroni is a Python package used to handle PostgreSQL configuration in the high availability clusters. You’ve already installed Patroni in the Step 3 in <strong>node-1</strong>, <strong>node-2</strong>, <strong>node-3</strong>.</p>
@@ -586,9 +586,9 @@ sudo systemctl enable haproxy
 <h2 id="step-9-—-testing-the-setup">Step 9 <strong>—</strong> Testing the Setup</h2>
 <p>You can test the highly available cluster using the HAProxy dashboard.</p>
 <p>In your preferred web browser, enter the http://&lt;<sup>&gt;node-5-IP-address&lt;</sup>&gt;:7000 to open the HAProxy dashboard which looks like the below image.</p>
-<p><img src="https://imgur.com/o0KFtlO" alt="HAproxy dashboard page"></p>
+<p><img src="https://imgur.com/o0KFtlO.png" alt="HAproxy dashboard page"></p>
 <p>In the postgres section, the green highlighted line denotes the postgres node which is currently acting as the master. Now, shutdown the <strong>node-1</strong> or stop the Patroni service in the <strong>node-1</strong>, you’ll be able to see another node from the cluster becomes the master. Refresh the HAProxy dashboard page and you’ll see the <strong>node-2</strong> which has become the master as shown below.</p>
-<p><img src="https://imgur.com/4ZxTY8X" alt="HAproxy dashboard page2"></p>
+<p><img src="https://imgur.com/4ZxTY8X.png" alt="HAproxy dashboard page2"></p>
 <p>When you restart the <strong>node-1</strong> or start the Patroni service, then <strong>node-1</strong> will join the cluster, sync and follow the leader <strong>node-2</strong>.</p>
 <p>You now have the highly available postgres up and running.</p>
 <p>Your applications and postgres client can use the &lt;<sup>&gt;public-IP-address&lt;</sup>&gt; of the <strong>node-5</strong> where HAProxy is installed with port 5000 to connect to this highly available cluster.</p>
