@@ -1,9 +1,9 @@
 <h1 id="java-tutorial-java-command-line-arguments">Java Tutorial: Java Command Line Arguments</h1>
 <h2 id="introduction">Introduction</h2>
 <!-- What is a command line program and why is it useful? -->
-<p>Java command line program is a program which allows you to accept values for program variables from the command line during the execution of the program. With command line programs, you do not need any graphical user interface to interact or pass any configurable values to your program. You can do it by using the command line arguments.</p>
+<p>Java command line program is a program which accepts values for program variables from the command line during the execution. With command line programs, you do not need any graphical user interface to interact or pass any configurable values to your program. You can do it by using the command line arguments.</p>
 <!-- What are command line arguments? What do they allow you to do?-->
-<p>Java command line arguments are arguments which can be passed to your  program while executing it via command line. It is useful to make your java program more configurable rather making it a static one.  Command Line arguments typically follow the name of the program when it is executed.</p>
+<p>Java command line arguments are arguments which are passed to your  program while executing it via command line. It is useful to make your java program more configurable rather making it a static one.  Command Line arguments typically follow the name of the program when it is executed.</p>
 <p>In this tutorial, I’ll show you how to</p>
 <ul>
 <li>Use Single and Multiple command line arguments</li>
