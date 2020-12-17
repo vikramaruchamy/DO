@@ -45,9 +45,10 @@
 <li><code>one</code> your first command line argument to the program</li>
 </ul>
 <p>You’ll see the below output.</p>
-<p><code>This is a simple command line program!</code><br>
-<code>Your Command Line arguments are :</code><br>
-<code>one</code></p>
+<pre><code>This is a simple command line program!
+Your Command Line arguments are:
+one
+</code></pre>
 <h3 id="execute-with-multiple-arguments">Execute with Multiple arguments</h3>
 <p>Now, you’ll execute your Java program with the multiple command line arguments using the <code>java</code> command.</p>
 <p><code>java SimpleCommandLinePgm one two three four</code></p>
@@ -57,28 +58,118 @@
 <li><code>one two three four</code> your list of command line arguments to the program separated by space.</li>
 </ul>
 <p>You’ll see the below output.</p>
-<p><code>This is a simple command line program!</code><br>
-<code>Your Command Line arguments are :</code><br>
-<code>one</code><br>
-<code>two</code><br>
-<code>three</code><br>
-<code>four</code></p>
+<pre><code>This is a simple command line program!
+Your Command Line arguments are :
+one
+two
+three
+four
+</code></pre>
 <p>You’ve seen how to use command line programs which accepts single and multiple command line parameters. Now you’ll see how to use command line parameters as a key value pairs.</p>
 <h2 id="advanced-topics">Advanced topics</h2>
 <p>In this section, you’ll create a program which will accept command line argument as a key value pair and access the arguments.</p>
-<p>By default, Java doesn’t accept key value pair. However, the arguments can be passed using the -D parameter <code>-Dproperty=value</code> which will pass the key value pair arguments as a system properties. In your java program, you can access this value using the method <code>system.getProperty()</code> method</p>
+<p>By default, Java doesn’t accept key value pair. However, the arguments can be passed using the -D parameter <code>-Dproperty=value</code> which will pass the key value pair arguments as arguments for JVM itself.</p>
+<p>In your java program, you can access this value using the method <code>system.getProperty()</code> method</p>
 <p>The below example shows how the key value pair arguments can be accessed from your Java program.</p>
-<pre><code>class AdvancedCommandLinePgm {
-  public static void main(String[] args) {
-    System.out.println("This is a advanced command line program!");
-    System.out.println("Your Key value command line arguemnt is :");
-    //to get the value using the System.get Property and print it. 
-    System.out.println("keyName : " + System.getProperty("keyName"));
-  }
+<pre><code>public class AdvancedCommandLinePgm {
+	public static void main(String[] args) {
+		System.out.println("This is a advanced command line program!");
+		System.out.println("Your Key value command line argument is :");
+		// to get the value using the System.get Property and print it.
+		System.out.println("User Name is : " + System.getProperty("userName"));
+	}
+}
+
+</code></pre>
+<p>You can execute the above program using the below command line code.</p>
+<pre><code>C:\Program Files\Java\jre1.8.0_181\bin\javaw.exe "-DuserName=Vikram Aruchamy" -Dfile.encoding=Cp1252 -classpath "G:\Eclipse_Workspace\com.draftdev.cmdlineargs\bin;" com.draftdev.cmdlineargs.AdvancedCommandLinePgm
+</code></pre>
+<p>You’ve learnt simple and advanced commandline programs supported natively by Java. Now, you’ll learn other methods supported by third party libraries.</p>
+<h2 id="other-methods">Other methods</h2>
+<p>In this section, you’ll learn about the third party libraries to handle the command line parameters with ease. Using third party libraries saves you lot of time too. The two third party libraries you’ll learn are</p>
+<ul>
+<li>Apache Commons Cli</li>
+<li>PicoCli</li>
+</ul>
+<p>There are three stages for the command line processing. Definition, Parsing and Interrogation.</p>
+<p><strong>Definition</strong> - To define your command line parameters in your program<br>
+<strong>Parsing</strong> - To parse the parameters passed from the commandline and store it in your model<br>
+<strong>Interrogation</strong> - To check the parsed model and use it as required</p>
+<p>Now, you’ll see how the two third party libraries handle all the three stages.</p>
+<h3 id="apache-commons-cli">Apache Commons Cli</h3>
+<p>Apache Commons Cli library provides you an API for parsing the command line arguements you pass to the command line programs.</p>
+<h4 id="definition">Definition</h4>
+<p>You can define the command line option using the Options and Option objects available in Commons Cli.</p>
+<p><strong>Options</strong> list to hold all the option you define for your program.</p>
+<p><strong>Option</strong> lets you define the characteristics of the each parameter.</p>
+<pre><code>Option name = new Option("opt", "longOpt", hasArgs, "Description");
+</code></pre>
+<p>Above line is explained below.</p>
+<p><em>opt</em> -  small notation(name) for your parameter<br>
+<em>longOpt</em> - long notation(name) for your parameter<br>
+<em>hasArgs</em> -  flag -to denote if this parameter will have an argument attached or this parameter will just act as a flag. You either pass <em>true</em> or <em>false</em><br>
+<em>Description</em> - Description for your parameter.</p>
+<p>You can set if this option is a mandatory option by using the <code>setRequired()</code> method available in the <code>Option</code> object.</p>
+<p>Once you have defined this, you can add this option to the Options list by using <code>Options.addOption()</code> method available in <code>Option</code>.</p>
+<h4 id="parsing">Parsing</h4>
+<p>You can parse the command line parameters using Command line Cli using the  <code>DefaultParser</code> implementation of the <code>CommandlineParser</code> interface.</p>
+<p><code>DefaultParser</code> Implementation has the <code>parse()</code> which accepts the <code>options</code> object defined and the <code>args</code> from the command line.</p>
+<p>It will parse the command line parameters sent in args and returns the model <code>CommandLine</code> which has all the options stored. You can use it for interrogation.</p>
+<h4 id="interrogation">Interrogation</h4>
+<p>You’ve parsed and stored the command line parameters in the <code>CommandLine</code> model.</p>
+<p>Now, you’ll see how to use it in your program.</p>
+<p><code>getOptionValue()</code> method in the <code>CommandLine</code> can be used to get the value of the command line parameter.</p>
+<p>If your parameter is just a flag and doesn’t have an argument value, then <code>hasOption()</code> method can be used to check if the specific flag is set or not.</p>
+<p>You can use the <code>HelpFormatter</code> to print the help information to the user, in case the command line parameters are not valid. Use <code>printHelp()</code> to print the help. It will print your complete command line definition available in <code>Options</code>.</p>
+<pre><code>public class CommonsCliPgm {
+
+	public static void main(String[] args) throws Exception {
+
+		Options options = new Options();
+
+		Option name = new Option("f", "name", true, "First Name");
+		name.setRequired(true);
+		options.addOption(name);
+
+		Option lastName = new Option("l", "lastname", true, "Last Name");
+		lastName.setRequired(true);
+		options.addOption(lastName);
+
+		Option email = new Option("e", "email", true, "Email");
+		email.setRequired(true);
+		options.addOption(email);
+
+		Option mobileNumber = new Option("m", "mobilenumber", true, "Mobile Number");
+		mobileNumber.setRequired(false);
+		options.addOption(mobileNumber);
+
+		HelpFormatter formatter = new HelpFormatter();
+
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd;
+
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+			formatter.printHelp("User Profile Info", options);
+
+			System.exit(1);
+			return;
+		}
+
+		System.out.println("User First Name is: " + cmd.getOptionValue("name"));
+		System.out.println("User Last Name is: " + cmd.getOptionValue("lastname"));
+		System.out.println("User Email is: " + cmd.getOptionValue("email"));
+		if (cmd.hasOption("m")) {
+			System.out.println("User Mobile Number is: " + cmd.getOptionValue("mobilenumber"));
+
+		}
+	}
 }
 </code></pre>
-<p>Sets a system property value.</p>
-<h2 id="other-methods">Other methods</h2>
+<pre><code>C:\Program Files\Java\jre1.8.0_181\bin\javaw.exe -Dfile.encoding=Cp1252 -classpath "G:\Eclipse_Workspace\com.draftdev.cmdlineargs\bin;G:\Eclipse_Workspace\com.draftdev.cmdlineargs\lib\commons-cli-1.4.jar" com.draftdev.cmdlineargs.CommonsCliPgm -f Vikram -l Aruchamy -e questions@askvikram.com -m 8015500500
+</code></pre>
 <ul>
 <li>
 <p>Using a third-party library (like <a href="https://picocli.info/">Picocli</a>) to handle/parse command line arguments</p>
