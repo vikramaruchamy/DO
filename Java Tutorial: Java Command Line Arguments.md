@@ -63,10 +63,21 @@
 <code>two</code><br>
 <code>three</code><br>
 <code>four</code></p>
+<p>You’ve seen how to use command line programs which accepts single and multiple command line parameters. Now you’ll see how to use command line parameters as a key value pairs.</p>
 <h2 id="advanced-topics">Advanced topics</h2>
-<ul>
-<li>[Writer’s choice] Make your command line demo code gradually more complicated by showing other features like options with flags, CLI responses, etc.</li>
-</ul>
+<p>In this section, you’ll create a program which will accept command line argument as a key value pair and access the arguments.</p>
+<p>By default, Java doesn’t accept key value pair. However, the arguments can be passed using the -D parameter <code>-Dproperty=value</code> which will pass the key value pair arguments as a system properties. In your java program, you can access this value using the method <code>system.getProperty()</code> method</p>
+<p>The below example shows how the key value pair arguments can be accessed from your Java program.</p>
+<pre><code>class AdvancedCommandLinePgm {
+  public static void main(String[] args) {
+    System.out.println("This is a advanced command line program!");
+    System.out.println("Your Key value command line arguemnt is :");
+    //to get the value using the System.get Property and print it. 
+    System.out.println("keyName : " + System.getProperty("keyName"));
+  }
+}
+</code></pre>
+<p>Sets a system property value.</p>
 <h2 id="other-methods">Other methods</h2>
 <ul>
 <li>
