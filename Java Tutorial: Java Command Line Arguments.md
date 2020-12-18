@@ -30,7 +30,8 @@
 }
 </code></pre>
 <p>To compile the program from command line, use</p>
-<p><code>javac SimpleCommandLinePgm.java</code></p>
+<pre><code>javac  SimpleCommandLinePgm.java
+</code></pre>
 <ul>
 <li><code>javac</code> is the keyword to compile your java program</li>
 <li><code>SimpleCommandLinePgm.java</code> is your Java program name</li>
@@ -38,7 +39,8 @@
 <p>This will compile your Java program and create a <code>.class</code> file which can be executed with the <code>java</code> command.</p>
 <h3 id="execute-with-one-argument">Execute with One Argument</h3>
 <p>Now, you’ll execute your Java program with the one command line argument using the <code>java</code> command.</p>
-<p><code>java SimpleCommandLinePgm one</code></p>
+<pre><code>java SimpleCommandLinePgm one
+</code></pre>
 <ul>
 <li><code>Java</code> keyword to execute the compiled Java program</li>
 <li><code>SimpleCommandLinePgm</code> name of the compiled Java program without <code>.java</code> extension.</li>
@@ -51,7 +53,8 @@ one
 </code></pre>
 <h3 id="execute-with-multiple-arguments">Execute with Multiple arguments</h3>
 <p>Now, you’ll execute your Java program with the multiple command line arguments using the <code>java</code> command.</p>
-<p><code>java SimpleCommandLinePgm one two three four</code></p>
+<pre><code>java SimpleCommandLinePgm one two three four
+</code></pre>
 <ul>
 <li><code>Java</code> keyword to execute the compiled Java program</li>
 <li><code>SimpleCommandLinePgm</code> name of the compiled Java program without <code>.java</code> extension.</li>
@@ -66,7 +69,7 @@ three
 four
 </code></pre>
 <p>You’ve seen how to use command line programs which accepts single and multiple command line parameters. Now you’ll see how to use command line parameters as a key value pairs.</p>
-<h2 id="advanced-topics">Advanced topics</h2>
+<h2 id="advanced">Advanced</h2>
 <p>In this section, you’ll create a program which will accept command line argument as a key value pair and access the arguments.</p>
 <p>By default, Java doesn’t accept key value pair. However, the arguments can be passed using the -D parameter <code>-Dproperty=value</code> which will pass the key value pair arguments as arguments for JVM itself.</p>
 <p>In your java program, you can access this value using the method <code>system.getProperty()</code> method</p>
@@ -85,7 +88,7 @@ four
 <pre><code>C:\Program Files\Java\jre1.8.0_181\bin\javaw.exe "-DuserName=Vikram Aruchamy" -Dfile.encoding=Cp1252 -classpath "G:\Eclipse_Workspace\com.draftdev.cmdlineargs\bin;" com.draftdev.cmdlineargs.AdvancedCommandLinePgm
 </code></pre>
 <p>You’ve learnt simple and advanced command line programs supported natively by Java. Now, you’ll learn other methods supported by third party libraries.</p>
-<h2 id="other-methods">Other methods</h2>
+<h2 id="using-third-party-libraries">Using Third Party Libraries</h2>
 <p>In this section, you’ll learn about the third party libraries to handle the command line parameters with ease. Using third party libraries saves you lot of time too. The two third party libraries you’ll learn are</p>
 <ul>
 <li>PicoCli</li>
@@ -97,7 +100,7 @@ four
 <strong>Interrogation</strong> - To check the parsed model and use it as required</p>
 <p>Now, you’ll see how the two third party libraries handle all the three stages.</p>
 <h3 id="picocli">PicoCli</h3>
-<p>PicoCli is a library provides lot of powerful functionalities for handling the command line arguments. It is an one file framework that allows you to create java program with almost Zero code for the command line handling.</p>
+<p>PicoCli is a library provides lot of powerful functionalities for handling the command line arguments. It is an one file framework that allows you to create java program with almost zero code for the command line handling.</p>
 <p>It also supports multiple command line syntax styles including POSIX, GNU, MS-DOS. It can also generate highly customizable help messages with Ansi styles and colors to highlight important elements.</p>
 <p>To use the PicoCli, you need to the <a href="https://github.com/remkop/picocli/releases/download/v4.5.2/picocli-4.5.2.jar">jar</a> in your buildpath/classpath or the maven repository depending on your project configuration.</p>
 <p>You can add the PicoCli to your maven by using the following code in the POM file.</p>
@@ -109,14 +112,14 @@ four
 </code></pre>
 <p>Now, you’ll learn how to define, parse and interrogate the command line arguments using the <code>PicoCli</code>.</p>
 <p>PicoCli can be implemented by using the interfaces <code>Callable</code> or <code>Runnable</code> which makes it easy for you to create a runnable Java program.</p>
-<p>In this example, you will create a class that implements the <code>Callable</code> Interface.</p>
+<p>In this example, you will create a class that implements the <code>Runnable</code> Interface.</p>
 <pre><code>@Command(name = "userprofileinfo", mixinStandardHelpOptions = true, version = "User Profile Information V1.0", description = "Displays the User profile information.")
-class PicoCliSamplePgm implements Callable&lt;Integer&gt;
+class PicoCliSamplePgm implements Runnable
 {
 }
 </code></pre>
-<p>The annotation <code>@Command</code>  for the class denotes that this program is a command line program. There are different attributes for the <code>@Command</code> annotation.<br>
-<em>name</em> - Name of the command line program<br>
+<p>The annotation <code>@Command</code>  for the class denotes that this program is a command line program. There are different attributes for the <code>@Command</code> annotation.</p>
+<p><em>name</em> - Name of the command line program<br>
 <em>mixinStandardHelpOptions</em> - Flag to denote whether Usage help and Version help should be added to your program as <a href="https://picocli.info/#_mixins">Mixin</a><br>
 <em>version</em> - Version information of the command line program, to display while printing the usage help<br>
 <em>description</em> - Description of the command line program, to display while printing the usage help</p>
@@ -127,14 +130,18 @@ class PicoCliSamplePgm implements Callable&lt;Integer&gt;
 </ol>
 <p>Options are parameters which must have one ore more names to it.</p>
 <p>Below example shows how option can be defined.</p>
-<p><code>@Option(names = { "-f", "--firstname" }, required = true, description = "First Name of the user") 	private String firstName = "First Name";</code></p>
-<p>The annotation <code>@Option</code> for the Java variable denotes that this is a command line option.<br>
-<em>names</em> - Short name and long name for command line parameter<br>
+<pre><code>@Option(names = { "-f", "--firstname" }, required = true, description = "First Name of the user")
+	private String firstName = "First Name";
+</code></pre>
+<p>The annotation <code>@Option</code> for the Java variable denotes that this is a command line option.</p>
+<p><em>names</em> - Short name and long name for command line parameter<br>
 <em>required</em> - Flag to denote if this parameter is a mandatory parameter. true means mandatory, false means Optional.<br>
 <em>description</em> - Description of the command line parameter, to display while printing the usage help.</p>
 <p>Positional parameters are doesn’t have a name to it. They are the values that usually follow the options. Positional parameters are by default <strong>mandatory</strong>.</p>
 <p>Below example show how a positional parameter can be defined.</p>
-<p><code>@Parameters(index = "1") private String country;</code></p>
+<pre><code>@Parameters(index = "0")
+private String country;
+</code></pre>
 <p>The annotation <code>@Parameters</code> for the Java variable denotes that this is a command line parameter.<br>
 <em>index</em> - Index is a zero based number to denote the position of this parameter. Specifying index is Optional.</p>
 <p>Positional parameter generally follow the options. From from PicoCli, it can also be mixed between options.</p>
@@ -145,44 +152,42 @@ System.exit(exitCode);
 </code></pre>
 <p>It will parse the command line arguments and execute the <code>callable</code> you have defined in your program as follows.</p>
 <pre><code>@Command(name = "userprofileinfo", mixinStandardHelpOptions = true, version = "User Profile Information V1.0", description = "Displays the User profile information.")
-class PicoCliSamplePgm implements Callable&lt;Integer&gt; {
+class PicoCliSamplePgm implements Runnable {
 
 	@Option(names = { "-f", "--firstname" }, required = true, description = "First Name of the user")
 	private String firstName = "First Name";
-	
+
 	@Option(names = { "-l", "--lastname" }, required = true, description = "Last name of the user")
 	private String lastName = "Last Name";
-	
+
 	@Option(names = { "-e", "--email" }, required = true, description = "email id of the user")
 	private String email = "email";
-	
-	//Positional Parameters
-    @Parameters(index = "1")
+
+	// Positional Parameters
+	@Parameters(index = "0")
 	private String country;
-	
+
 	@Option(names = { "-m", "--mobilenumber" }, required = false, description = "Mobile Number of the user")
 	private String mobileNumber;
-	
-	
 
 	@Override
-	public Integer call() throws Exception {
+	public void run() {
 		// your business logic goes here...
 		System.out.println("User First Name is: " + firstName);
 		System.out.println("User Last Name is: " + lastName);
 		System.out.println("User Email is: " + email);
-		if (mobileNumber!=null) {
+		if (mobileNumber != null) {
 			System.out.println("User Mobile Number is: " + mobileNumber);
 
 		}
-		
-		if(country!=null &amp;&amp; !country.isEmpty()) {
+
+		if (country != null &amp;&amp; !country.isEmpty()) {
 			System.out.println("Positional parameter User's country is: " + country);
 		}
-		return 0;
+
 	}
 
-	// this example implements Callable, so parsing, error handling and handling
+	// this example implements Runnable, so parsing, error handling and handling
 	// user
 	// requests for usage help or version help can be done with one line of code.
 	public static void main(String... args) {
@@ -294,13 +299,13 @@ User Mobile Number is: 123456789
 User Last Name is: Aruchamy
 User Email is: name@email.com
 </code></pre>
-<p>This is all about apache commons cli. Now, you’ll learn the tiny, mighty commandline parameter library PicoCli.</p>
-<p>Thats all about the third party libraries available to handle the command line script. Now, you’ll see how these scripts using an IDE.</p>
+<p>This summarizes  apache commons cli.</p>
+<p>That’s all about the third party libraries available to handle the command line script. Now, you’ll see how these scripts using an IDE.</p>
 <h2 id="using-an-ide-to-testrun-a-command-line-script">Using an IDE to test/run a command line script</h2>
-<p>In this section, you’ll learn how to test/run the command line scripts using the eclipse IDE and IntelliJ Idea assuming you’ve the basic project setup and a command line program existing in the projects.</p>
+<p>In this section, you’ll learn how to test/run the command line scripts using the <em>eclipse IDE</em> and <em>IntelliJ Idea</em> assuming you’ve the basic project setup and a command line program existing in the projects.</p>
 <h3 id="eclipse-ide">Eclipse IDE</h3>
 <p>In eclipse, Right Click on the Class(Your Command Line Program). In the context menu, select <em>Run As -&gt; Java Application</em>. It will run the program.</p>
-<p><img src="https://imgur.com/TxCUkQB.jpg" alt="enter image description here"></p>
+<p><img src="https://imgur.com/TxCUkQB.jpg" alt="Eclipse Command Line Arguments"></p>
 <p>Now you’ll see the error saying that command line parameters are missing as below.</p>
 <pre><code>Missing required options and parameters: '--firstname=&lt;firstName&gt;', '--lastname=&lt;lastName&gt;', '--email=&lt;email&gt;', '&lt;country&gt;'
 Usage: userprofileinfo [-hV] -e=&lt;email&gt; -f=&lt;firstName&gt; -l=&lt;lastName&gt;
@@ -318,7 +323,7 @@ Displays the User profile information.
   -V, --version         Print version information and exit.
 </code></pre>
 <p>It would’ve create a run configuration for you. You can select menu <em>Run -&gt; Run Configuration</em>. It will show you all the run configurations available in the workspace. Select the Class name(Your Command Line Program) on the left side as shown below and enter your command line parameters as shown in the below image.</p>
-<p><img src="https://imgur.com/WDedaTk.jpg" alt="enter image description here"></p>
+<p><img src="https://imgur.com/WDedaTk.jpg" alt="Eclipse Command Line Arguments"></p>
 <p>Click Run. You’ll see output based on your command line parameters.</p>
 <pre><code>User First Name is: Vikram
 User Last Name is: Aruchamy
@@ -328,11 +333,12 @@ Positional parameter User's country is: India
 </code></pre>
 <h3 id="intellij">IntelliJ</h3>
 <p>In IntelliJ, Right Click on the Class(Your Command Line Program). In the context menu, select <em>Run PicoCliSamplePgm.Main()</em> as shown below.<br>
-<img src="https://imgur.com/VaZc6iw.jpg" alt="enter image description here"></p>
+<img src="https://imgur.com/VaZc6iw.jpg" alt="IntelliJ Command Line Arguements"></p>
 <p>It will run the program and show the error.</p>
 <p>Now it would have created the configuration. Select menu Run -&gt; Run Configurations.</p>
 <p>Select the Class name(Your Command Line Program) on the left side as shown below and enter your command line parameters in <strong>Program Arguments</strong> option as shown in the below image. Click Ok.</p>
-<p>Now, Again Run your program using the Run Option in the right click context menu.</p>
+<p><img src="https://imgur.com/ACdK7Zu.jpg" alt="IntelliJ Command Line Arguements"></p>
+<p>Now, Again Run your program using the Run Option in the right click context menu. You’ll see output based on your command line parameters.</p>
 <p>This is how you can run your command line programs in IDEs.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>To summarize, You’ve created simple and advanced command line program which can accept single and multiple command line parameters. You’ve also learnt how to create the command line programs using the third party libraries PicoCli and Apache commons Cli and how to execute it using the Eclipse and IntelliJ IDEs.</p>
