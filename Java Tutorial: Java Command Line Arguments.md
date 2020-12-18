@@ -295,16 +295,45 @@ User Last Name is: Aruchamy
 User Email is: name@email.com
 </code></pre>
 <p>This is all about apache commons cli. Now, you’ll learn the tiny, mighty commandline parameter library PicoCli.</p>
-<ul>
-<li>
-<p>Using a third-party library (like <a href="https://picocli.info/">Picocli</a>) to handle/parse command line arguments</p>
-</li>
-<li>
-<p>Using an IDE to test/run a command line script</p>
-</li>
-</ul>
+<p>Thats all about the third party libraries available to handle the command line script. Now, you’ll see how these scripts using an IDE.</p>
+<h2 id="using-an-ide-to-testrun-a-command-line-script">Using an IDE to test/run a command line script</h2>
+<p>In this section, you’ll learn how to test/run the command line scripts using the eclipse IDE and IntelliJ Idea assuming you’ve the basic project setup and a command line program existing in the projects.</p>
+<h3 id="eclipse-ide">Eclipse IDE</h3>
+<p>In eclipse, Right Click on the Class(Your Command Line Program). In the context menu, select <em>Run As -&gt; Java Application</em>. It will run the program.</p>
+<p><img src="https://imgur.com/TxCUkQB.jpg" alt="enter image description here"></p>
+<p>Now you’ll see the error saying that command line parameters are missing as below.</p>
+<pre><code>Missing required options and parameters: '--firstname=&lt;firstName&gt;', '--lastname=&lt;lastName&gt;', '--email=&lt;email&gt;', '&lt;country&gt;'
+Usage: userprofileinfo [-hV] -e=&lt;email&gt; -f=&lt;firstName&gt; -l=&lt;lastName&gt;
+                       [-m=&lt;mobileNumber&gt;] &lt;country&gt;
+Displays the User profile information.
+      &lt;country&gt;
+  -e, --email=&lt;email&gt;   email id of the user
+  -f, --firstname=&lt;firstName&gt;
+                        First Name of the user
+  -h, --help            Show this help message and exit.
+  -l, --lastname=&lt;lastName&gt;
+                        Last name of the user
+  -m, --mobilenumber=&lt;mobileNumber&gt;
+                        Mobile Number of the user
+  -V, --version         Print version information and exit.
+</code></pre>
+<p>It would’ve create a run configuration for you. You can select menu <em>Run -&gt; Run Configuration</em>. It will show you all the run configurations available in the workspace. Select the Class name(Your Command Line Program) on the left side as shown below and enter your command line parameters as shown in the below image.</p>
+<p><img src="https://imgur.com/WDedaTk.jpg" alt="enter image description here"></p>
+<p>Click Run. You’ll see output based on your command line parameters.</p>
+<pre><code>User First Name is: Vikram
+User Last Name is: Aruchamy
+User Email is: name@email.com
+User Mobile Number is: 123456798
+Positional parameter User's country is: India
+</code></pre>
+<h3 id="intellij">IntelliJ</h3>
+<p>In IntelliJ, Right Click on the Class(Your Command Line Program). In the context menu, select <em>Run PicoCliSamplePgm.Main()</em> as shown below.<br>
+<img src="https://imgur.com/VaZc6iw.jpg" alt="enter image description here"></p>
+<p>It will run the program and show the error.</p>
+<p>Now it would have created the configuration. Select menu Run -&gt; Run Configurations.</p>
+<p>Select the Class name(Your Command Line Program) on the left side as shown below and enter your command line parameters in <strong>Program Arguments</strong> option as shown in the below image. Click Ok.</p>
+<p>Now, Again Run your program using the Run Option in the right click context menu.</p>
+<p>This is how you can run your command line programs in IDEs.</p>
 <h2 id="conclusion">Conclusion</h2>
-<ul>
-<li>Summarize why command line arguments are used and what readers just learned</li>
-</ul>
+<p>To summarize, You’ve created simple and advanced command line program which can accept single and multiple command line parameters. You’ve also learnt how to create the command line programs using the third party libraries PicoCli and Apache commons Cli and how to execute it using the Eclipse and IntelliJ IDEs.</p>
 
