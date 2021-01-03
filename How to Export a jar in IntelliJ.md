@@ -10,7 +10,6 @@
 
 <body class="stackedit">
   <div class="stackedit__html"><h2 id="introduction">Introduction</h2>
-<!-- What is a JAR, why is it useful? (briefly) -->
 <p>Jar file is a <strong>J</strong>ava <strong>ar</strong>chive file. It is typically a package of your application in a single archive file. Jar files are platform independent.</p>
 <p>There are two types of Jar file.</p>
 <ol>
@@ -28,15 +27,6 @@
 <p>To understand the tutorial better, you’ll use a simple example program which accepts user profile information as a command line arguments. This program also uses the PicoCli and Apache Commons Cli as external dependencies which will support in validating and parsing the command line parameters.</p>
 <p>You can download the project from the GitHub to your local machine from this link.</p>
 <h2 id="exporting-a-jar-using-build-artifact-method">Exporting a Jar Using Build Artifact Method</h2>
-<ul>
-<li>
-<p>Why use this method? What are the pros/cons?</p>
-</li>
-<li>
-<p>Walk readers step-by-step through exporting a JAR, and include screenshots</p>
-</li>
-</ul>
-<hr>
 <p>In this method, you’ll export a jar file using the IntelliJ build option.</p>
 <p>Before starting up, you’ll need to <a href="https://www.jetbrains.com/help/idea/new-project-wizard.html">create a project</a> and add the necessary <a href="https://www.jetbrains.com/help/idea/working-with-module-dependencies.html#add-a-new-dependency">dependencies to your project</a>. Dependencies are external programs packaged as jar which has some functionalities implemented already and can easily be reused in your program.  Also create a main class with some simple functionality.</p>
 <p>You’ve created project and created a <a href="https://www.jetbrains.com/help/idea/run-debug-configuration.html">Run Configuration</a> which can be used to execute the project. Now you’ll see how to setup your program to export a Jar from the IntelliJ workspace.</p>
@@ -67,8 +57,6 @@ Now a single jar file will be created which will contain your class files and al
 <p>This is how you can Export a jar file using the options available in the Intellij.</p>
 <p>Next, you’ll see how to export a Jar using the Maven build.</p>
 <h2 id="exporting-a-jar-using-maven-build">Exporting a Jar Using Maven Build</h2>
-<!-- Why use this method? What are the pros/cons? -->
-<!-- Walk readers step-by-step through exporting a JAR, and include screenshots. &#10;-->
 <p>In this section, you’ll export a Jar using Maven build. Maven is developed to make the build process easier. You can create scripts which is used build projects based on any triggers such as</p>
 <ul>
 <li>Build the project and create a Jar file after each and every commit to your Git Repo.</li>
