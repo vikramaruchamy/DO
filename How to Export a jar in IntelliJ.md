@@ -17,7 +17,6 @@
 <li>Executable Jar File</li>
 </ol>
 <p>Normal Jar files are jars which is a package of your application in archive format without an entry point. It means you cannot directly execute this type of Jar file. You can only add this as a dependency to other programs and use it. On the other hand, executable Jar file is a package of your application in archive format which can be executed directly without any external program. In Simple words, the executable jar files can be started directly by doubling clicking on it.</p>
-<!--  Why do some Java devs have trouble creating a JAR from IntelliJ? -->
 <p>IntelliJ provides multiple ways to Export a Jar file from your workspace. But it involves setting up your project architecture in an appropriate way to export a jar without any difficulty.</p>
 <p>In this tutorial, We’ll explain you the different ways to export a Jar from IntelliJ. The two methods explained below are</p>
 <ol>
@@ -65,7 +64,7 @@ Now a single jar file will be created which will contain your class files and al
 </ul>
 <p>Create a Maven project in the Intelli using the <a href="https://www.jetbrains.com/help/idea/maven-support.html#create_new_maven_project">Create maven Project tutorial</a>.</p>
 <p><strong>Note:</strong> Add the necessary classes for your project. You can use the same class files and dependencies used in the Method 1 example.</p>
-<p>When you create a new Maven project, you’ll have the [minimum pom file] (<a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#minimal-pom">https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#minimal-pom</a>) created in your project directory with the below contents.</p>
+<p>When you create a new Maven project, you’ll have the <a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#minimal-pom">minimum pom file</a> created in your project directory with the below contents.</p>
 <pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;  
 &lt;project xmlns="http://maven.apache.org/POM/4.0.0"  
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
@@ -100,7 +99,7 @@ Now a single jar file will be created which will contain your class files and al
 &lt;/plugin&gt;
 </code></pre>
 <p>With this, you are adding a maven compiler for your projects and also mentioning the <code>java version</code> for compiling your sources. Here, you’re using <code>Java</code> version <code>1.8</code>.</p>
-<p>Next, you’ll add the [<code>maven-assembly-plugin</code>] (<a href="https://maven.apache.org/plugins/maven-assembly-plugin/">https://maven.apache.org/plugins/maven-assembly-plugin/</a>).</p>
+<p>Next, you’ll add the <a href="https://maven.apache.org/plugins/maven-assembly-plugin/"><code>maven-assembly-plugin</code></a>.</p>
 <p>This assembly plugin is used to create a assembly of your Java project. The complete setup of the maven-assembly-plugin is given below. The sections are also explained separaterly.</p>
 <pre><code>&lt;plugin&gt;  
 &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt;  
