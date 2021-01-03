@@ -25,6 +25,8 @@
 <li>Exporting a Jar Using Build Artifact Method</li>
 <li>Exporting a Jar Using Maven Build</li>
 </ol>
+<p>To understand the tutorial better, you’ll use a simple example program which accepts user profile information as a command line arguments. This program also uses the PicoCli and Apache Commons Cli as external dependencies which will support in validating and parsing the command line parameters.</p>
+<p>You can download the project from the GitHub to your local machine from this link.</p>
 <h2 id="exporting-a-jar-using-build-artifact-method">Exporting a Jar Using Build Artifact Method</h2>
 <ul>
 <li>
@@ -35,10 +37,9 @@
 </li>
 </ul>
 <hr>
-<p>In this method, you’ll export a jar file using the IntelliJ build option. Before starting up, you’ll need to <a href="https://www.jetbrains.com/help/idea/new-project-wizard.html">create a project</a> and add the necessary <a href="https://www.jetbrains.com/help/idea/working-with-module-dependencies.html#add-a-new-dependency">dependencies to your project</a>. Dependencies are external programs packaged as jar which has some functionalities implemented already and can easily be reused in your program.</p>
-<p>Also create a main class with some simple functionality. In this example program, you’ll see a simple program which accepts user profile information as a command line arguments. This program also uses the PicoCli and Apache Commons Cli as dependencies which will support in validating and parsing the command line parameters.</p>
-<p>You can download the project from the GitHub to your local machine from this link.</p>
-<p>You’ve created project and created a Run Configuration which can be used to execute the project. Now you’ll see how to setup your program to export a Jar from the IntelliJ workspace.</p>
+<p>In this method, you’ll export a jar file using the IntelliJ build option.</p>
+<p>Before starting up, you’ll need to <a href="https://www.jetbrains.com/help/idea/new-project-wizard.html">create a project</a> and add the necessary <a href="https://www.jetbrains.com/help/idea/working-with-module-dependencies.html#add-a-new-dependency">dependencies to your project</a>. Dependencies are external programs packaged as jar which has some functionalities implemented already and can easily be reused in your program.  Also create a main class with some simple functionality.</p>
+<p>You’ve created project and created a <a href="https://www.jetbrains.com/help/idea/run-debug-configuration.html">Run Configuration</a> which can be used to execute the project. Now you’ll see how to setup your program to export a Jar from the IntelliJ workspace.</p>
 <p>First you need to setup the project settings to define the artifacts of this project. Click <em>Project structure</em> from the file menu as shown in the below image.</p>
 <p><img src="https://imgur.com/hxOrsAz.jpg" alt="enter image description here"></p>
 <p>Project structure window will be opened. Select the Artifacts option from the left pane and Click the Plus symbol. You’ll see the Jar option. Expand the Jar option and you’ll see <em>From module with dependencies</em> option as shown in the below image.</p>
@@ -57,15 +58,40 @@ Now a single jar file will be created which will contain your class files and al
 <p>This method is recommended when you have lot of Jar files especially when any of the Jar files are signed. <a href="https://docs.oracle.com/javase/tutorial/deployment/jar/signing.html">Signed Jar files</a> may not work properly when you extract the class files into your jar file. Hence, its better to copy the Jar files to the output directory and use it appropriately via the manifest file.</p>
 <p>Select the appropriate option and <em>click Ok</em>. This will create an artifact in your Artifacts window as shown below.</p>
 <p><img src="https://imgur.com/tvfYXlf.jpg" alt="enter image description here"></p>
+<p>You’ll see the name of the jar in the <em>Name</em> option and the location of the output jar file in the <em>Output directory</em> option. You can change the output directory to your desired location.</p>
+<p>Next option is <em>Include in project build.</em> You can enable this option, if you need a jar to be created during each and every project build.</p>
+<p>If you do not want a jar to be created, you can leave it unselected. Now the Jar will not be created during each and every project build.</p>
+<p>In that case, you can build the Jar finally when you are done with your project development using the <em>Build artifacts</em> option as shown in the below image.</p>
+<p><img src="https://imgur.com/48xH535.jpg" alt="enter image description here"></p>
+<p>When you click <em>Build artifacts</em>, the Jar will be generated in the Output directory you have selected.</p>
+<p>This is how you can Export a jar file using the options available in the Intellij.</p>
+<p>Next, you’ll see how to export a Jar using the Maven build.</p>
 <h2 id="exporting-a-jar-using-maven-build">Exporting a Jar Using Maven Build</h2>
+<!-- Why use this method? What are the pros/cons? -->
+<!-- Walk readers step-by-step through exporting a JAR, and include screenshots. &#10;-->
+<p>In this section, you’ll export a Jar using Maven build. Maven is developed to make the build process easier. You can create scripts which is used build projects based on any triggers such as</p>
 <ul>
-<li>Why use this method? What are the pros/cons?</li>
-<li></li>
+<li>Build the project and create a Jar file after each and every commit to your Git Repo.</li>
+<li>Build the project nighthly and deploy the Jars in the production systems     when all the defined test cases are passing.</li>
+<li>You can use <a href="https://www.jenkins.io/">Jenkins</a> to automate the build and deployment of the maven projects.</li>
 </ul>
-<ul>
-<li>Walk readers step-by-step through exporting a JAR, and include screenshots<br>
-<a href="https://www.jetbrains.com/help/idea/maven-support.html#create_new_maven_project">https://www.jetbrains.com/help/idea/maven-support.html#create_new_maven_project</a></li>
-</ul>
+<p>Create a Maven project in the Intelli using the <a href="https://www.jetbrains.com/help/idea/maven-support.html#create_new_maven_project">Create maven Project tutorial</a>.</p>
+<p><strong>Note:</strong> Add the necessary classes for your project. You can use the same class files and dependencies used in the Method 1 example.</p>
+<p>When you create a new Maven project, you’ll have the [minimum pom file] (<a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#minimal-pom">https://maven.apache.org/guides/introduction/introduction-to-the-pom.html#minimal-pom</a>) created in your project directory with the below contents.</p>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;  
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"  
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;  
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;  
+  
+    &lt;groupId&gt;com.draft.dev.maven.demo&lt;/groupId&gt;  
+    &lt;artifactId&gt;com.draft.dev.maven.demo&lt;/artifactId&gt;  
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt; 
+&lt;/project&gt;
+
+</code></pre>
+<p>It contains there import</p>
+<h3 id="configuring-maven-build">Configuring Maven build</h3>
 <h2 id="conclusion">Conclusion</h2>
 <ul>
 <li>Reiterate what readers learned in this post</li>
